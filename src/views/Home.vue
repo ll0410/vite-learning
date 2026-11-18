@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { add, multiply } from '@/utils/math'
+import { formatDate, slugify } from '@/utils/format'
 
 // 模板表达式里不能用 import.meta，统一在 script 里取值
 const title = import.meta.env.VITE_APP_TITLE
@@ -22,6 +23,13 @@ const envRows = Object.entries(import.meta.env)
         <p>2 + 3 = <b>{{ add(2, 3) }}</b></p>
         <p>2 × 3 = <b>{{ multiply(2, 3) }}</b></p>
         <p class="muted">来自 <code>@/utils/math</code></p>
+      </article>
+
+      <article class="panel">
+        <h2>依赖预构建</h2>
+        <p>日期：<b>{{ formatDate(Date.now()) }}</b></p>
+        <p>slug：<code>{{ slugify('Vite Dependency Pre Bundling') }}</code></p>
+        <p class="muted">来自 dayjs（CJS）+ lodash-es（多文件 ESM）</p>
       </article>
 
       <article class="panel">

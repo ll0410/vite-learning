@@ -22,6 +22,12 @@ export default defineConfig(({ command, mode }) => {
       },
     },
 
+    // ch06：显式声明需要预构建的依赖。
+    // 好处：首个页面还没请求到它时就开始预构建，减少「二次刷新才不卡」的现象。
+    optimizeDeps: {
+      include: ['lodash-es', 'dayjs'],
+    },
+
     server: {
       port: 5173,
       strictPort: false,
