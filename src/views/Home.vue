@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { add, multiply } from '@/utils/math'
-import { formatDate, slugify } from '@/utils/format'
 import HelloWorld from '@/components/HelloWorld.vue'
 import Counter from '@/components/Counter.vue'
 import { ref } from 'vue'
@@ -8,6 +7,17 @@ import appInfo from 'virtual:app-info'
 
 const title = import.meta.env.VITE_APP_TITLE
 const clicks = ref(0)
+
+// ch11：组件级动态导入——点击后才下载 format 模块所在的 chunk
+const formatResult = ref<string[]>([])
+
+async function loadFormatModule() {
+  const mod = await import('@/utils/format')
+  formatResult.value = [
+    `日期：${mod.formatDate(Date.now())}`,
+    `slug：${mod.slugify('Vite Code Splitting')}`,
+  ]
+}
 
 // ch10：调用本地插件提供的 mock 接口
 const users = ref<Array<{ id: number; name: string; role: string }>>([])
@@ -46,8 +56,10 @@ const envRows = Object.entries(import.meta.env)
 
       <article class="panel">
         <h2>依赖预构建</h2>
-        <p>日期：<b>{{ formatDate(Date.now()) }}</b></p>
-        <p>slug：<code>{{ slugify('Vite Dependency Pre Bundling') }}</code></p>
+        <HelloWorld label="动态加载 format 模块" @click="loadFormatModule" />
+        <ul v-if="formatResult.length" class="users">
+          <li v-for="line in formatResult" :key="line">{{ line }}</li>
+        </ul>
         <p class="muted">来自 dayjs（CJS）+ lodash-es（多文件 ESM）</p>
       </article>
 

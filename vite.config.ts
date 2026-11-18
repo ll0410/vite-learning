@@ -69,6 +69,24 @@ export default defineConfig(({ command, mode }) => {
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
+      // ch11：代码分割。Vite 8 使用 Rolldown 的 codeSplitting；
+      // 旧的 output.manualChunks 对象写法在 Vite 8 已被移除。
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'vendor-vue',
+                test: /node_modules[\\/](vue|vue-router|@vue)[\\/]/,
+              },
+              {
+                name: 'vendor-utils',
+                test: /node_modules[\\/](lodash-es|dayjs)[\\/]/,
+              },
+            ],
+          },
+        },
+      },
     },
   }
 })
