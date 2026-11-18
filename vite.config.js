@@ -1,13 +1,21 @@
 // ch03：从空配置升级为「可解释的常用配置」。
+// ch04：用 loadEnv 在构建期读取环境变量。
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
-// 函数式配置：可以拿到 command（serve/build）与 mode（development/production/staging...）
 export default defineConfig(({ command, mode }) => {
+  // 第三个参数传 '' 表示读取所有变量（包括没有 VITE_ 前缀的）。
+  // 注意：env 只在这里（Node 侧）可用，不会自动注入客户端。
+  const env = loadEnv(mode, process.cwd(), '')
+
   console.debug(`[vite.config] command=${command}, mode=${mode}`)
+  console.debug(
+    `[vite.config] VITE_API_BASE=${env.VITE_API_BASE}, DB_PASSWORD=${
+      env.DB_PASSWORD ? '已读取（仅构建期）' : '未设置'
+    }`,
+  )
 
   return {
-    // 别名：把 @ 指向 src。注意：这里必须用绝对路径。
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -16,7 +24,6 @@ export default defineConfig(({ command, mode }) => {
 
     server: {
       port: 5173,
-      // 端口被占用时自动换端口；设为 true 则直接报错
       strictPort: false,
       open: false,
     },
@@ -24,8 +31,6 @@ export default defineConfig(({ command, mode }) => {
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
-      // 多页应用时在这里加 input，本章只在文档里演示：
-      // rolldownOptions: { input: { main: 'index.html', admin: 'admin.html' } },
     },
   }
 })
