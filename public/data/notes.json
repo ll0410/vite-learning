@@ -1,0 +1,5 @@
+{
+  "source": "public/data/notes.json",
+  "message": "这个文件不参与打包，直接以 /data/notes.json 访问",
+  "items": ["public 目录", "不做 hash", "不改写路径"]
+}

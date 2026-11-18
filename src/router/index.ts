@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import About from '@/views/About.vue'
+import Assets from '@/views/Assets.vue'
 import NotFound from '@/views/NotFound.vue'
 
 export const router = createRouter({
@@ -10,6 +11,7 @@ export const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: Home },
     { path: '/about', name: 'about', component: About },
+    { path: '/assets', name: 'assets', component: Assets },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound },
   ],
 })

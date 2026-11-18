@@ -7,6 +7,7 @@ const mode = import.meta.env.MODE
 
 const navItems = [
   { to: '/', label: 'Home' },
+  { to: '/assets', label: '静态资源' },
   { to: '/about', label: 'About' },
 ]
 </script>
