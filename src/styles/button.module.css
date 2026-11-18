@@ -1,0 +1,24 @@
+/* ch07：CSS Modules。类名会在构建时被替换成带哈希的唯一名字。 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #42b883;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  /* autoprefixer 会为它补上 -webkit-user-select */
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}

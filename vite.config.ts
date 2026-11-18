@@ -28,6 +28,21 @@ export default defineConfig(({ command, mode }) => {
       include: ['lodash-es', 'dayjs'],
     },
 
+    // ch07：CSS 工程化配置
+    css: {
+      // 开发时在 DevTools 里能看到源码位置而不是编译后的 CSS
+      devSourcemap: true,
+      preprocessorOptions: {
+        scss: {
+          // 注入到每个 <style lang="scss"> 的最前面，省去重复 @use
+          additionalData: '@use "@/styles/variables" as *;\n',
+        },
+      },
+      // Vite 8 构建期默认用 Lightning CSS 压缩 CSS。
+      // 如需调整降级目标：
+      // lightningcss: { targets: { chrome: 111 << 16 } },
+    },
+
     server: {
       port: 5173,
       strictPort: false,

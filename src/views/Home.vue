@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { add, multiply } from '@/utils/math'
 import { formatDate, slugify } from '@/utils/format'
+import HelloWorld from '@/components/HelloWorld.vue'
+import { ref } from 'vue'
 
-// 模板表达式里不能用 import.meta，统一在 script 里取值
 const title = import.meta.env.VITE_APP_TITLE
+const clicks = ref(0)
 
 const envRows = Object.entries(import.meta.env)
   .filter(([key]) => key.startsWith('VITE_') || ['MODE', 'DEV', 'PROD', 'BASE_URL'].includes(key))
@@ -30,6 +32,13 @@ const envRows = Object.entries(import.meta.env)
         <p>日期：<b>{{ formatDate(Date.now()) }}</b></p>
         <p>slug：<code>{{ slugify('Vite Dependency Pre Bundling') }}</code></p>
         <p class="muted">来自 dayjs（CJS）+ lodash-es（多文件 ESM）</p>
+      </article>
+
+      <article class="panel">
+        <h2>CSS 工程化</h2>
+        <p>CSS Modules 按钮（类名带哈希）：</p>
+        <HelloWorld label="点我 +1" @click="clicks++" />
+        <p class="muted">点击次数：{{ clicks }}</p>
       </article>
 
       <article class="panel">

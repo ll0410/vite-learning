@@ -1,0 +1,5 @@
+// ch07：SCSS 变量，通过 vite.config 的 additionalData 自动注入到每个 <style lang="scss">。
+$brand: #42b883;
+$brand-dark: #2f8f68;
+$radius: 12px;
+$space: 8px;
