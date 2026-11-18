@@ -3,6 +3,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { router } from './router'
+import { bootNote } from './hmr-demo/no-accept'
 import './styles/main.css'
+
+console.debug('[boot]', bootNote)
 
 createApp(App).use(router).mount('#app')

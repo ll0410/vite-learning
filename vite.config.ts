@@ -47,6 +47,9 @@ export default defineConfig(({ command, mode }) => {
       port: 5173,
       strictPort: false,
       open: false,
+      // ch09：HMR 默认走 dev server 同一端口，一般无需配置。
+      // 需要自定义 WebSocket 时：
+      // hmr: { port: 24678, overlay: true },
     },
 
     build: {

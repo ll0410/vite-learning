@@ -2,6 +2,7 @@
 import { add, multiply } from '@/utils/math'
 import { formatDate, slugify } from '@/utils/format'
 import HelloWorld from '@/components/HelloWorld.vue'
+import Counter from '@/components/Counter.vue'
 import { ref } from 'vue'
 
 const title = import.meta.env.VITE_APP_TITLE
@@ -39,6 +40,11 @@ const envRows = Object.entries(import.meta.env)
         <p>CSS Modules 按钮（类名带哈希）：</p>
         <HelloWorld label="点我 +1" @click="clicks++" />
         <p class="muted">点击次数：{{ clicks }}</p>
+      </article>
+
+      <article class="panel">
+        <h2>HMR 状态保留</h2>
+        <Counter />
       </article>
 
       <article class="panel">
