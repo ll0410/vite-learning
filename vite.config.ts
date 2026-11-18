@@ -1,11 +1,9 @@
-// ch03：从空配置升级为「可解释的常用配置」。
-// ch04：用 loadEnv 在构建期读取环境变量。
+// ch05：接入 Vue。配置从 .js 迁移到 .ts，并注册 @vitejs/plugin-vue。
 import { fileURLToPath, URL } from 'node:url'
+import vue from '@vitejs/plugin-vue'
 import { defineConfig, loadEnv } from 'vite'
 
 export default defineConfig(({ command, mode }) => {
-  // 第三个参数传 '' 表示读取所有变量（包括没有 VITE_ 前缀的）。
-  // 注意：env 只在这里（Node 侧）可用，不会自动注入客户端。
   const env = loadEnv(mode, process.cwd(), '')
 
   console.debug(`[vite.config] command=${command}, mode=${mode}`)
@@ -16,6 +14,8 @@ export default defineConfig(({ command, mode }) => {
   )
 
   return {
+    plugins: [vue()],
+
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
