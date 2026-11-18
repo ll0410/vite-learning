@@ -4,9 +4,25 @@ import { formatDate, slugify } from '@/utils/format'
 import HelloWorld from '@/components/HelloWorld.vue'
 import Counter from '@/components/Counter.vue'
 import { ref } from 'vue'
+import appInfo from 'virtual:app-info'
 
 const title = import.meta.env.VITE_APP_TITLE
 const clicks = ref(0)
+
+// ch10：调用本地插件提供的 mock 接口
+const users = ref<Array<{ id: number; name: string; role: string }>>([])
+const loading = ref(false)
+
+async function loadUsers() {
+  loading.value = true
+  try {
+    const res = await fetch('/api/mock/users')
+    const data = (await res.json()) as { users: Array<{ id: number; name: string; role: string }> }
+    users.value = data.users
+  } finally {
+    loading.value = false
+  }
+}
 
 const envRows = Object.entries(import.meta.env)
   .filter(([key]) => key.startsWith('VITE_') || ['MODE', 'DEV', 'PROD', 'BASE_URL'].includes(key))
@@ -45,6 +61,20 @@ const envRows = Object.entries(import.meta.env)
       <article class="panel">
         <h2>HMR 状态保留</h2>
         <Counter />
+      </article>
+
+      <article class="panel">
+        <h2>自定义插件</h2>
+        <p>虚拟模块：<code>virtual:app-info</code></p>
+        <p class="muted">
+          {{ appInfo.name }}@{{ appInfo.version }} · vite {{ appInfo.vite }}
+        </p>
+        <p class="muted">插件时间戳：{{ appInfo.builtAt }}</p>
+        <HelloWorld label="请求 mock 接口" @click="loadUsers" />
+        <p v-if="loading" class="muted">加载中…</p>
+        <ul v-else-if="users.length" class="users">
+          <li v-for="user in users" :key="user.id">{{ user.name }} · {{ user.role }}</li>
+        </ul>
       </article>
 
       <article class="panel">
@@ -115,5 +145,12 @@ td {
 td:first-child {
   width: 45%;
   color: #6b7280;
+}
+
+.users {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #374151;
 }
 </style>

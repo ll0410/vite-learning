@@ -1,7 +1,13 @@
 // ch05：接入 Vue。配置从 .js 迁移到 .ts，并注册 @vitejs/plugin-vue。
+// ch10：注册四个本地插件 + vite-plugin-inspect。
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, loadEnv } from 'vite'
+import inspect from 'vite-plugin-inspect'
+import { appInfoPlugin } from './plugins/virtual-app-info'
+import { buildStampPlugin } from './plugins/append-build-stamp'
+import { mockApiPlugin } from './plugins/mock-api'
+import { stripDebugPlugin } from './plugins/strip-debug'
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -14,7 +20,15 @@ export default defineConfig(({ command, mode }) => {
   )
 
   return {
-    plugins: [vue()],
+    plugins: [
+      vue(),
+      appInfoPlugin(),
+      buildStampPlugin(),
+      mockApiPlugin(),
+      stripDebugPlugin(),
+      // 可视化插件管线：dev 下访问 /__inspect/
+      inspect(),
+    ],
 
     resolve: {
       alias: {
