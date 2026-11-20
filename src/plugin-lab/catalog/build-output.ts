@@ -25,5 +25,12 @@ export const buildOutputCategory: PluginLabCategory = {
       buildOnly: true,
       verify: '执行 pnpm build，校验 index.html 与 admin.html 的 integrity 与产物 SHA-384 一致，并检查 robots.txt / _headers。',
     },
+    {
+      id: 'build-output-replace-assets',
+      title: '21. 替换产物中的占位域名',
+      guide: '/plugins/build-output/04-replace-built-assets',
+      buildOnly: true,
+      verify: '执行 pnpm build，确认文本产物不含 __PUBLIC_ORIGIN__、PNG 与源文件哈希一致；dev 请求 fixture 仍保留占位符。',
+    },
   ],
 }
