@@ -11,5 +11,12 @@ export const codeTransformCategory: PluginLabCategory = {
       buildOnly: true,
       verify: 'dev 保留受控调试源码；build 断言 console/debugger/test-only 哨兵消失，且 ch10 console.debug 断言不回归。',
     },
+    {
+      id: 'inject-tracking',
+      title: '6. 组件挂载点埋点自动注入',
+      guide: '/plugins/code-transform/02-inject-tracking',
+      demo: '/plugins/code-transform#inject-tracking',
+      verify: '进入分类页自动记录 code-transform-demo-mounted；Inspect 可见别名注入，生产 chunk 保留事件。',
+    },
   ],
 }

@@ -1,5 +1,7 @@
+<!-- lab:inject-tracking -->
 <script setup lang="ts">
 import '@/plugin-lab/fixtures/code-transform/strip-debug-fixture'
+import { trackingEvents } from '@/plugin-lab/tracking'
 
 const docsBase = 'http://localhost:5174'
 </script>
@@ -18,6 +20,25 @@ const docsBase = 'http://localhost:5174'
       <pre><code>pnpm build</code></pre>
       <a :href="`${docsBase}/plugins/code-transform/01-strip-debug`" target="_blank" rel="noreferrer">
         阅读 strip-debug 指南与断言命令
+      </a>
+    </article>
+
+    <article id="inject-tracking" class="panel">
+      <h2>6. 组件挂载点埋点自动注入</h2>
+      <p>
+        此组件带有显式注入标记，但没有手写 <code>onMounted</code> 或 <code>track(...)</code> 调用。
+        下列记录由插件注入的挂载回调自动产生：
+      </p>
+      <p class="event-count" data-testid="tracking-count">已记录 {{ trackingEvents.length }} 条挂载事件</p>
+      <ul v-if="trackingEvents.length" class="events">
+        <li v-for="(event, index) in trackingEvents" :key="index" data-testid="tracking-event">
+          <code>{{ event.name }}</code>
+          <time :datetime="event.occurredAt">{{ event.occurredAt }}</time>
+        </li>
+      </ul>
+      <p v-else>等待组件挂载…</p>
+      <a :href="`${docsBase}/plugins/code-transform/02-inject-tracking`" target="_blank" rel="noreferrer">
+        阅读 inject-tracking 指南
       </a>
     </article>
   </section>
@@ -52,6 +73,23 @@ h1 {
   color: #4b5563;
   font-size: 14px;
   line-height: 1.7;
+}
+
+.event-count {
+  font-weight: 600;
+}
+
+.events {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  color: #374151;
+  font-size: 13px;
+}
+
+.events time {
+  margin-left: 8px;
+  color: #6b7280;
 }
 
 pre {
