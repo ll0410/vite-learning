@@ -18,5 +18,12 @@ export const buildOutputCategory: PluginLabCategory = {
       buildOnly: true,
       verify: '执行 pnpm build，抽样比对 version.json / cdn-manifest.json 的 SHA-256 与文件内容一致，URL 均为 cdn.example.com 前缀。',
     },
+    {
+      id: 'build-output-static-deployment',
+      title: '20. 生成 SRI、robots.txt、_headers',
+      guide: '/plugins/build-output/03-static-deployment',
+      buildOnly: true,
+      verify: '执行 pnpm build，校验 index.html 与 admin.html 的 integrity 与产物 SHA-384 一致，并检查 robots.txt / _headers。',
+    },
   ],
 }
