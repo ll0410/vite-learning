@@ -1,3 +1,4 @@
+// 插件示例：通过薄适配层复用 Rollup 风格核心插件，并输出迁移验收元数据。
 import { fileURLToPath } from 'node:url'
 import type { Plugin } from 'vite'
 

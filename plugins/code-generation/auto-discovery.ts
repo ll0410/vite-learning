@@ -1,3 +1,5 @@
+// 插件示例：扫描目录生成组件注册表和约定式路由。
+// 学习点：文件内容变化走 Vite 默认 HMR，目录结构变化需主动失效虚拟模块。
 import { readdirSync } from 'node:fs'
 import { basename, join, relative } from 'node:path'
 import { normalizePath, type Plugin } from 'vite'
@@ -26,6 +28,7 @@ function routeRecord(root: string, viewsDir: string, file: string) {
   const segments = relativeName.split('/')
   if (segments.at(-1) === 'index') segments.pop()
 
+  // [id].vue 转为 :id 动态参数，index.vue 则归入父级路径。
   const pathSegments = segments.map((segment) => {
     const dynamic = segment.match(/^\[(.+)\]$/)
     return dynamic ? `:${dynamic[1]}` : segment
@@ -78,6 +81,7 @@ export function autoDiscoveryPlugin(): Plugin {
         server.ws.send({ type: 'full-reload', path: '*' })
       }
 
+      // 只有新增或删除文件会改变生成清单，内容修改无需重新扫描目录。
       server.watcher.on('add', invalidateStructure)
       server.watcher.on('unlink', invalidateStructure)
     },

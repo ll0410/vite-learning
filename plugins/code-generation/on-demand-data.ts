@@ -1,3 +1,5 @@
+// 插件示例：通过 virtual:on-demand-data/<dataset>/<key> 仅导出被引用的数据项。
+// 学习点：一个数据文件可对应多个虚拟模块，开发期只失效引用该文件的模块。
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
@@ -16,6 +18,7 @@ function parseRequest(id: string) {
 
 export function onDemandDataPlugin(): Plugin {
   let root = ''
+  // 记录“虚拟模块 -> 数据文件”，供文件变化时精确查找受影响模块。
   const requestedFiles = new Map<string, string>()
 
   const datasetFile = (dataset: string) =>

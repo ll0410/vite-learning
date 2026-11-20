@@ -1,3 +1,5 @@
+// 插件示例：用内存会话模拟 SSO 回调、登录态查询和受限二进制上传。
+// 仅用于开发教学：会话不写盘，上传不保存文件，服务重启后状态即清空。
 import { createHash, randomUUID } from 'node:crypto'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
@@ -98,6 +100,7 @@ export function authUploadPlugin(): Plugin {
             return
           }
 
+          // Content-Length 用于提前拒绝；流式计数继续兜底缺失或伪造长度的情况。
           const declaredSize = Number(req.headers['content-length'])
           if (Number.isFinite(declaredSize) && declaredSize > MAX_UPLOAD_BYTES) {
             req.resume()
@@ -110,6 +113,7 @@ export function authUploadPlugin(): Plugin {
           let tooLarge = false
 
           req.on('data', (chunk: Buffer) => {
+            // 超限后继续消费但丢弃数据，既避免连接悬挂，也不再累积 Buffer。
             size += chunk.length
             if (size > MAX_UPLOAD_BYTES) {
               tooLarge = true

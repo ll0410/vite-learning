@@ -1,3 +1,5 @@
+// 插件示例：按 URL origin 去重注入 preconnect，并按 hostname 注入 dns-prefetch。
+// head-prepend 让资源提示尽早生效；非 HTTP(S) 地址不会生成标签。
 import type { HtmlTagDescriptor, Plugin } from 'vite'
 
 export interface PreconnectOptions {

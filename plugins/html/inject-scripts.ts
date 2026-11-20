@@ -1,3 +1,5 @@
+// 插件示例：通过 transformIndexHtml 的 tags 声明式注入 CDN、监控和统计脚本。
+// 本地 stub 替代真实第三方请求，便于同时验证 dev 与 build 的 HTML 输出。
 import type { HtmlTagDescriptor, Plugin } from 'vite'
 
 export interface ScriptStub {

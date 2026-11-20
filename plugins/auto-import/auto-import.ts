@@ -1,3 +1,5 @@
+// 插件示例：在 Vue SFC 的 <script setup> 中按需补齐 API 与组件导入。
+// 学习点：enforce: 'pre' 让源码扫描早于 Vue 编译，buildStart 同步生成类型声明。
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import type { Plugin } from 'vite'
@@ -13,6 +15,7 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+// 教学版用正则避免重复导入；复杂项目应改用 AST，排除注释、字符串等误匹配。
 function hasBinding(script: string, identifier: string) {
   const name = escapeRegExp(identifier)
   const declaration = new RegExp(`\\b(?:const|let|var|function|class)\\s+${name}\\b`)
@@ -70,6 +73,7 @@ export function autoImportPlugin(options: AutoImportOptions): Plugin {
       const filename = resolve(root, options.dts)
       const declarations = renderDeclarations(options)
       mkdirSync(dirname(filename), { recursive: true })
+      // 仅在内容变化时写文件，避免无意义地触发 watch 与 HMR。
       if (!existsSync(filename) || readFileSync(filename, 'utf8') !== declarations) {
         writeFileSync(filename, declarations)
       }

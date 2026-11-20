@@ -3,7 +3,7 @@ import { pluginGuideSidebar } from './plugin-sidebar'
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: 'Vite 学习实验室',
+  title: 'Vite Learning',
   description: '10 小时动手实践 Vite 8：开发链路、构建链路、插件机制与性能优化',
   lastUpdated: true,
   // 教程里的示例地址指向本地 demo 服务，构建时无需校验
@@ -43,7 +43,6 @@ export default defineConfig({
         },
       ],
       '/plugins/': [
-        ...pluginGuideSidebar,
         {
           text: '插件手册',
           items: [
@@ -52,6 +51,7 @@ export default defineConfig({
             { text: '开发必备插件清单', link: '/plugins/appendix-plugins' },
           ],
         },
+        ...pluginGuideSidebar,
         {
           text: '相关章节',
           items: [{ text: '10 Vite 插件机制', link: '/guide/ch10-plugins' }],

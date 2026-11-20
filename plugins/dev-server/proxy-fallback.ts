@@ -1,3 +1,5 @@
+// 插件示例：模拟主接口，并在 HTTP 状态异常或网络错误时返回本地兜底数据。
+// 学习点：开发期中间件可直接组合 Node fetch、运行时地址和自定义响应。
 import type { ServerResponse } from 'node:http'
 import type { Plugin, ViteDevServer } from 'vite'
 
@@ -16,6 +18,7 @@ function sendJson(res: ServerResponse, status: number, payload: object) {
   res.end(JSON.stringify(payload))
 }
 
+// 读取实际监听地址，兼容默认端口被占用后自动递增的情况。
 function getRuntimeOrigin(server: ViteDevServer) {
   const address = server.httpServer?.address()
   if (!address || typeof address === 'string') {
@@ -50,6 +53,7 @@ export function proxyFallbackPlugin(): Plugin {
           return
         }
         if (url.pathname === '/primary/network-error') {
+          // 主动断开连接，让 resource 请求中的 fetch 进入网络错误分支。
           req.socket.destroy()
           return
         }

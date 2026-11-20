@@ -2,6 +2,7 @@
 // 插件实验：受控 fixture 还演示单行 console、debugger 和 test-only 块裁剪。
 import type { Plugin } from 'vite'
 
+// 教学版只匹配整行语句和显式标记块；复杂生产场景应使用 AST 转换。
 const controlledFixtureRoot = '/src/plugin-lab/fixtures/code-transform/'
 
 export function stripDebugPlugin(): Plugin {

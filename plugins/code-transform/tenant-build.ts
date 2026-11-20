@@ -1,3 +1,5 @@
+// 插件示例：按 TENANT 读取租户配置，并通过 define 注入编译期常量。
+// config 钩子会在启动与构建时执行，非法租户应在配置合并前立即报错。
 import { readFileSync } from 'node:fs'
 import type { Plugin } from 'vite'
 
@@ -28,6 +30,7 @@ export function tenantBuildPlugin(): Plugin {
       const tenant = JSON.parse(readFileSync(configUrl, 'utf8')) as TenantConfig
 
       return {
+        // define 接收代码表达式，字符串必须序列化以保留运行时所需的引号。
         define: {
           __TENANT_ID__: JSON.stringify(tenantId),
           __TENANT_BRAND__: JSON.stringify(tenant.brand),

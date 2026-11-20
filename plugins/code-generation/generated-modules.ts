@@ -1,3 +1,5 @@
+// 插件示例：把 JSON fixture 生成为 API、路由和 i18n 虚拟模块。
+// 学习点：resolveId/load 负责生成代码，watcher + moduleGraph 负责输入变化后的失效与刷新。
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
@@ -6,6 +8,7 @@ const API_ID = 'virtual:generated-api'
 const ROUTES_ID = 'virtual:generated-routes'
 const I18N_ID = 'virtual:generated-i18n'
 
+// \0 标记内部虚拟模块，避免其他插件把它当作磁盘路径继续解析。
 const resolvedIds = {
   api: `\0${API_ID}`,
   routes: `\0${ROUTES_ID}`,
@@ -43,6 +46,7 @@ export function generatedModulesPlugin(): Plugin {
     },
 
     configureServer(server) {
+      // 虚拟模块没有真实文件路径，必须显式监听输入并失效对应模块。
       const watchedInputs = inputs()
       server.watcher.add(watchedInputs.map(({ file }) => file))
 

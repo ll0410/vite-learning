@@ -1,5 +1,8 @@
+// 插件示例：注入 Report-Only CSP、主题样式和首屏骨架，而不修改原始 index.html。
+// 学习点：transformIndexHtml 可同时返回改写后的 html 与待插入的 head 标签。
 import type { HtmlTagDescriptor, Plugin } from 'vite'
 
+// Report-Only 只报告不拦截，避免教学 CSP 阻断 Vite dev 与 HMR 所需资源。
 const reportOnlyCsp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
@@ -75,6 +78,7 @@ export function injectHeadAssets(): Plugin {
     name: 'plugin-lab:inject-head-assets',
     transformIndexHtml(html): { html: string; tags: HtmlTagDescriptor[] } {
       return {
+        // 骨架先放入挂载点，Vue 挂载后会替换它。
         html: html.replace(
           '<div id="app"></div>',
           `<div id="app">${skeletonMarkup}</div>`,

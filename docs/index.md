@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: Vite 学习实验室
+  name: Vite Learning
   text: 10 小时动手跑通 Vite 8
   tagline: 开发链路、构建链路、插件机制与性能优化，一个项目渐进式演进
   image:

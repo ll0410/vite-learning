@@ -1,3 +1,5 @@
+// 插件示例：仅转换受控 fixture 目录中的 Markdown、GraphQL 和 CSV。
+// Markdown 包装为虚拟 .vue 主模块后交给 Vue 插件，其余类型直接转换为 JS 数据导出。
 import { readFile } from 'node:fs/promises'
 import { isAbsolute, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -118,6 +120,7 @@ function markdownToSfc(source: string) {
   ].join('\n')
 }
 
+// 逐字符解析以支持引号内的逗号、换行，以及双引号转义。
 function parseCsv(source: string) {
   const input = source.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
   const records: string[][] = []

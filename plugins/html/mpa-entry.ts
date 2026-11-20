@@ -1,3 +1,5 @@
+// 插件示例：构建时注册 index/admin 多入口，并注入各入口独立的标题和 meta。
+// 学习点：config 修改 rolldownOptions.input，transformIndexHtml 用 context.filename 区分入口。
 import { basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { HtmlTagDescriptor, Plugin } from 'vite'
@@ -17,6 +19,7 @@ export function mpaEntry(): Plugin {
   return {
     name: 'plugin-lab:mpa-entry',
     config(_config, { command }) {
+      // dev 可直接访问各个 HTML 文件，只有构建需要显式声明多入口。
       if (command !== 'build') return
 
       return {

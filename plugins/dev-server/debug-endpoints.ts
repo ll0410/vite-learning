@@ -1,3 +1,5 @@
+// 插件示例：提供开发期运行时配置查询和模块缓存清理接口。
+// 学习点：configureServer 可读取 ViteDevServer，并通过 moduleGraph/WebSocket 主动刷新页面。
 import type { ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
 
@@ -46,6 +48,7 @@ export function debugEndpointsPlugin(): Plugin {
             return
           }
 
+          // 失效模块图后还需整页刷新，浏览器才会重新请求并执行最新模块。
           const invalidatedModules = server.moduleGraph.idToModuleMap.size
           server.moduleGraph.invalidateAll()
           sendJson(res, 200, { invalidatedModules, fullReload: true })
