@@ -5,5 +5,6 @@ export const htmlInjectionSidebar: DefaultTheme.SidebarItem = {
   collapsed: true,
   items: [
     { text: '10. 注入 CDN、监控与统计脚本', link: '/plugins/html-injection/01-inject-scripts' },
+    { text: '11. 注入 CSP、主题与首屏骨架', link: '/plugins/html-injection/02-head-assets' },
   ],
 }

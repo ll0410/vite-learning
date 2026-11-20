@@ -11,5 +11,12 @@ export const htmlInjectionCategory: PluginLabCategory = {
       demo: '/plugins/html-injection#inject-scripts',
       verify: '验证三个本地 stub 的加载标记、执行顺序与实际 script 标签。',
     },
+    {
+      id: 'html-head-assets',
+      title: '11. 注入 CSP meta、主题变量、首屏骨架',
+      guide: '/plugins/html-injection/02-head-assets',
+      demo: '/plugins/html-injection#head-assets',
+      verify: '读取 CSP meta 与主题计算样式，确认 Vue 挂载后骨架无残留。',
+    },
   ],
 }

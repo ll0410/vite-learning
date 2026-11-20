@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
 interface HtmlScriptState {
   order: string[]
   loaded: Partial<Record<'cdn' | 'monitor' | 'analytics', boolean>>
@@ -24,6 +26,23 @@ const scriptTags = Array.from(
   src: script.getAttribute('src') ?? '',
   markup: `<script src="${script.getAttribute('src')}" data-html-injection="${script.dataset.htmlInjection}"><\/script>`,
 }))
+
+const cspContent = document.querySelector<HTMLMetaElement>(
+  'meta[http-equiv="Content-Security-Policy-Report-Only"]',
+)?.content ?? ''
+const themeSample = ref<HTMLElement | null>(null)
+const accentValue = ref('')
+const surfaceValue = ref('')
+const skeletonPresent = ref(false)
+
+onMounted(() => {
+  if (themeSample.value) {
+    const styles = getComputedStyle(themeSample.value)
+    accentValue.value = styles.getPropertyValue('--plugin-lab-accent').trim()
+    surfaceValue.value = styles.backgroundColor
+  }
+  skeletonPresent.value = document.getElementById('plugin-lab-skeleton') !== null
+})
 </script>
 
 <template>
@@ -54,6 +73,33 @@ const scriptTags = Array.from(
           <code>{{ tag.markup }}</code>
         </li>
       </ul>
+    </section>
+
+    <section id="head-assets" class="demo-panel">
+      <p class="eyebrow">条目 11 · head 与挂载点</p>
+      <h2>CSP、主题与首屏骨架</h2>
+
+      <h3>Report-Only CSP</h3>
+      <p data-testid="csp-content" class="csp-content"><code>{{ cspContent }}</code></p>
+
+      <h3>主题计算样式</h3>
+      <div ref="themeSample" data-testid="theme-sample" class="theme-sample">
+        这个色块使用注入的 --plugin-lab-accent-surface。
+      </div>
+      <p
+        data-testid="theme-values"
+        :data-accent="accentValue"
+        :data-surface="surfaceValue"
+        class="theme-values"
+      >
+        变量：<code>{{ accentValue }}</code>；计算背景色：<code>{{ surfaceValue }}</code>
+      </p>
+
+      <h3>挂载后的骨架状态</h3>
+      <p data-testid="skeleton-state" :data-remaining="skeletonPresent">
+        {{ skeletonPresent ? '骨架仍有残留' : '骨架已被 Vue mount 替换' }}
+      </p>
+      <p class="muted">静态 HTML 中可见骨架；组件树挂载后，此处确认它已消失。</p>
     </section>
   </section>
 </template>
@@ -138,5 +184,32 @@ h1 {
 .tag-list code {
   display: block;
   overflow-wrap: anywhere;
+}
+
+.csp-content code {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.theme-sample {
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--plugin-lab-accent-surface);
+  color: var(--plugin-lab-accent);
+  font-weight: 600;
+}
+
+.theme-values,
+.muted {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+[data-remaining='false'] {
+  color: #047857;
+}
+
+[data-remaining='true'] {
+  color: #b91c1c;
 }
 </style>
