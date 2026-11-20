@@ -18,5 +18,12 @@ export const codeTransformCategory: PluginLabCategory = {
       demo: '/plugins/code-transform#inject-tracking',
       verify: '进入分类页自动记录 code-transform-demo-mounted；Inspect 可见别名注入，生产 chunk 保留事件。',
     },
+    {
+      id: 'tenant-build',
+      title: '7. 多租户 / 多品牌差异化构建',
+      guide: '/plugins/code-transform/03-tenant-build',
+      demo: '/plugins/code-transform#tenant-build',
+      verify: 'dev 显示默认品牌；dist 与 dist-beta 分别只含对应品牌、主题色和开关配置。',
+    },
   ],
 }

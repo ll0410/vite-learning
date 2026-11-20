@@ -6,5 +6,6 @@ export const codeTransformSidebar: DefaultTheme.SidebarItem = {
   items: [
     { text: '05 移除 console / debugger / 测试代码', link: '/plugins/code-transform/01-strip-debug' },
     { text: '06 组件挂载点埋点自动注入', link: '/plugins/code-transform/02-inject-tracking' },
+    { text: '07 多租户 / 多品牌差异化构建', link: '/plugins/code-transform/03-tenant-build' },
   ],
 }

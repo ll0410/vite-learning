@@ -4,6 +4,12 @@ import '@/plugin-lab/fixtures/code-transform/strip-debug-fixture'
 import { trackingEvents } from '@/plugin-lab/tracking'
 
 const docsBase = 'http://localhost:5174'
+const tenant = {
+  id: __TENANT_ID__,
+  brand: __TENANT_BRAND__,
+  theme: __TENANT_THEME__,
+  betaPanel: __TENANT_BETA_PANEL__,
+}
 </script>
 
 <template>
@@ -41,6 +47,32 @@ const docsBase = 'http://localhost:5174'
         阅读 inject-tracking 指南
       </a>
     </article>
+
+    <article
+      id="tenant-build"
+      class="panel tenant-panel"
+      :data-tenant="tenant.id"
+      :data-theme="tenant.theme"
+      :style="{ borderTopColor: tenant.theme }"
+    >
+      <h2>7. 多租户 / 多品牌差异化构建</h2>
+      <p>当前值由 <code>TENANT</code> 选择公开 JSON，并在配置阶段通过 <code>define</code> 内联。</p>
+      <h3 data-testid="tenant-brand">{{ tenant.brand }}</h3>
+      <p>租户 ID：<code data-testid="tenant-id">{{ tenant.id }}</code></p>
+      <p class="theme-row">
+        主题色：<code data-testid="tenant-theme">{{ tenant.theme }}</code>
+        <span class="theme-swatch" :style="{ backgroundColor: tenant.theme }" aria-label="租户主题色块" />
+      </p>
+      <p data-testid="tenant-beta">Beta 功能：{{ tenant.betaPanel ? '开启' : '关闭' }}</p>
+      <p v-if="tenant.betaPanel" class="beta-feature" data-testid="tenant-beta-panel">
+        Beta 专属公开功能面板
+      </p>
+      <pre><code>pnpm build
+TENANT=beta pnpm build --outDir dist-beta</code></pre>
+      <a :href="`${docsBase}/plugins/code-transform/03-tenant-build`" target="_blank" rel="noreferrer">
+        阅读 tenant-build 指南与对照构建命令
+      </a>
+    </article>
   </section>
 </template>
 
@@ -73,6 +105,35 @@ h1 {
   color: #4b5563;
   font-size: 14px;
   line-height: 1.7;
+}
+
+.tenant-panel {
+  border-top: 4px solid;
+}
+
+.tenant-panel h3 {
+  margin-bottom: 8px;
+}
+
+.theme-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.beta-feature {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fff7ed;
+  color: #9a3412 !important;
 }
 
 .event-count {
