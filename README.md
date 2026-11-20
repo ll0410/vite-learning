@@ -4,7 +4,7 @@
 
 - 目标：**一天之内**把 Vite 的开发链路、构建链路、插件机制与性能优化跑通一遍。
 - 方式：12 个可运行章节，每章都有明确的动手步骤、观察点和检查命令。
-- 版本：**Vite 8.3.8** + Vue 3.5 + TypeScript（Vite 8 已用 Rolldown / Oxc / Lightning CSS 替换旧技术栈，见 [附录](./docs/appendix-vite8-changes.md)）。
+- 版本：**Vite 8.3.8** + Vue 3.5 + TypeScript（Vite 8 已用 Rolldown / Oxc / Lightning CSS 替换旧技术栈，见 [附录](./docs/guide/appendix-vite8-changes.md)）。
 
 ## 需要什么
 
@@ -25,25 +25,25 @@ pnpm dev
 
 | 时段 | 内容 | 时长 |
 | --- | --- | --- |
-| 09:00–09:40 | [ch01 概述与心智模型](./docs/ch01-overview.md) | 40m |
-| 09:40–10:20 | [ch02 快速开始](./docs/ch02-quick-start.md) | 40m |
+| 09:00–09:40 | [ch01 概述与心智模型](./docs/guide/ch01-overview.md) | 40m |
+| 09:40–10:20 | [ch02 快速开始](./docs/guide/ch02-quick-start.md) | 40m |
 | 10:20–10:30 | 休息 | 10m |
-| 10:30–11:30 | [ch03 默认配置与常识](./docs/ch03-config-basics.md) | 60m |
-| 11:30–12:30 | [ch04 环境变量](./docs/ch04-env.md) | 60m |
+| 10:30–11:30 | [ch03 默认配置与常识](./docs/guide/ch03-config-basics.md) | 60m |
+| 11:30–12:30 | [ch04 环境变量](./docs/guide/ch04-env.md) | 60m |
 | 12:30–13:30 | 午餐 | 60m |
-| 13:30–14:50 | [ch05 框架加入（Vue）](./docs/ch05-vue.md) | 80m |
-| 14:50–15:50 | [ch06 依赖预构建](./docs/ch06-dep-prebundle.md) | 60m |
+| 13:30–14:50 | [ch05 框架加入（Vue）](./docs/guide/ch05-vue.md) | 80m |
+| 14:50–15:50 | [ch06 依赖预构建](./docs/guide/ch06-dep-prebundle.md) | 60m |
 | 15:50–16:00 | 休息 | 10m |
-| 16:00–17:10 | [ch07 CSS 工程化](./docs/ch07-css.md) | 70m |
-| 17:10–18:00 | [ch08 静态资源](./docs/ch08-assets.md) | 50m |
+| 16:00–17:10 | [ch07 CSS 工程化](./docs/guide/ch07-css.md) | 70m |
+| 17:10–18:00 | [ch08 静态资源](./docs/guide/ch08-assets.md) | 50m |
 | 18:00–18:40 | 晚餐 | 40m |
-| 18:40–19:40 | [ch09 HMR](./docs/ch09-hmr.md) | 60m |
-| 19:40–20:50 | [ch10 插件机制](./docs/ch10-plugins.md) | 70m |
-| 20:50–21:40 | [ch11 代码分割](./docs/ch11-code-splitting.md) | 50m |
-| 21:40–22:40 | [ch12 性能优化](./docs/ch12-performance.md) | 60m |
+| 18:40–19:40 | [ch09 HMR](./docs/guide/ch09-hmr.md) | 60m |
+| 19:40–20:50 | [ch10 插件机制](./docs/guide/ch10-plugins.md) | 70m |
+| 20:50–21:40 | [ch11 代码分割](./docs/performance/ch11-code-splitting.md) | 50m |
+| 21:40–22:40 | [ch12 性能优化](./docs/performance/ch12-performance.md) | 60m |
 | 22:40–23:00 | 复盘与自测 | 20m |
 
-纯学习时间 720 分钟。目录级速查见 [docs/00-roadmap.md](./docs/00-roadmap.md)。
+纯学习时间 720 分钟。目录级速查见 [docs/guide/index.md](./docs/guide/index.md)。
 
 ### 只有 10 小时？跳过这些
 
@@ -103,6 +103,9 @@ git checkout ch05 -- .      # 把工作区重置回某一章的参考实现（�
 | `pnpm build:staging` | 用 `staging` 模式构建（验证环境变量） |
 | `pnpm build:analyze` | 构建并生成 `dist/stats.html` 产物分析 |
 | `pnpm preview` | 本地预览 `dist/` 产物（`http://localhost:4173`） |
+| `pnpm docs:dev` | 启动 VitePress 文档站（`http://localhost:5174`） |
+| `pnpm docs:build` | 构建文档站到 `docs/.vitepress/dist` |
+| `pnpm docs:preview` | 预览文档站产物（`http://localhost:4174`） |
 
 ## 这个仓库里有什么「不是默认」的东西
 

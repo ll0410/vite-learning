@@ -12,7 +12,7 @@
 | `unplugin-auto-import` | 自动引入 `ref`、`computed`、`useRouter` 等，省掉大量 import | 待补 |
 | `unplugin-vue-components` | 组件自动注册，配合 UI 库做按需加载 | 待补 |
 | `unplugin-icons` | 基于 Iconify 的图标按需引入 | 待补 |
-| `vite-plugin-inspect` | 可视化插件管线，见 [ch10](./ch10-plugins.md) | 已有（仅 dev） |
+| `vite-plugin-inspect` | 可视化插件管线，见 [ch10](../guide/ch10-plugins.md) | 已有（仅 dev） |
 
 `unplugin-*` 是同一套代码适配 Vite / webpack / Rollup，换构建工具不用重写，因此成了事实标准。
 
@@ -90,4 +90,4 @@ checker({
 2. 补 `vite-plugin-checker`，把类型与规范检查前移到 dev。
 3. 其余插件按后续章节进度再引入，不要一次性堆满。
 
-插件机制本身见 [ch10 插件机制](./ch10-plugins.md)，Vite 8 的底层变化见 [附录：Vite 8 的关键变化](./appendix-vite8-changes.md)。
+插件机制本身见 [ch10 插件机制](../guide/ch10-plugins.md)，Vite 8 的底层变化见 [附录：Vite 8 的关键变化](../guide/appendix-vite8-changes.md)。

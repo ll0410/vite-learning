@@ -1,6 +1,6 @@
-# 学习路线速查表
+# 10 小时快速入门
 
-按顺序做，每章都有可执行的验证命令。详细步骤见各章文档。
+按顺序做，每章都有可执行的验证命令。入门共 10 章、590 分钟，学完能独立跑通 dev/build、配置、CSS、静态资源、HMR 与插件机制；代码分割与性能优化在「性能」栏目继续。
 
 ## 总览
 
@@ -16,14 +16,22 @@
 | 08 | [静态资源](./ch08-assets.md) | 图片该放 public 还是 assets？ | 50m | `find dist -name small.png` 为空 |
 | 09 | [HMR](./ch09-hmr.md) | 为什么有时热更新、有时整页刷新？ | 60m | 改模板后计数保留 |
 | 10 | [插件机制](./ch10-plugins.md) | 插件如何介入编译流程？ | 70m | `/__inspect/` 可访问 |
-| 11 | [代码分割](./ch11-code-splitting.md) | 首屏为什么能变小？ | 50m | `ls dist/assets/vendor-*` |
-| 12 | [性能优化](./ch12-performance.md) | 优化的抓手有哪些？ | 60m | `pnpm build:analyze` 生成 stats.html |
+
+## 延伸：性能专题
+
+完成入门后继续：
+
+- [11 代码分割](../performance/ch11-code-splitting.md)：首屏为什么能变小。
+- [12 性能优化](../performance/ch12-performance.md)：dev 与 build 两条链路的优化抓手。
+
+## 插件专题
+
+- [插件的高频使用场景](../plugins/appendix-plugin-scenarios.md)：六类自研场景与选型判断。
+- [开发必备插件清单](../plugins/appendix-plugins.md)：按必装 / 推荐 / 按需分档。
 
 ## 附录
 
 - [Vite 8 的关键变化](./appendix-vite8-changes.md)：技术栈替换与配置项映射。
-- [插件的高频使用场景](./appendix-plugin-scenarios.md)：六类自研场景与选型判断。
-- [开发必备插件清单](./appendix-plugins.md)：按必装 / 推荐 / 按需分档。
 
 ## 每章的固定结构
 
@@ -72,3 +80,5 @@ git tag -l
 - 产物 JS 中 `console.debug` 数量为 0。
 - `dist/index.html` 含 `build-stamp`。
 - 存在 `.gz` 与 `.br` 文件。
+
+> ch11 / ch12 对应的产物验证（`vendor-*` 分组、`stats.html`、`.gz` / `.br`）见「性能」栏目。

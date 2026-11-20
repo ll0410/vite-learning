@@ -120,7 +120,7 @@ transform(code, id) {
 - 返回 `map: null` 表示不提供 sourcemap；真实插件应生成 sourcemap，否则调试体验会退化。
 - **不要用正则做复杂的代码改写**，生产级插件应使用 AST（如 `oxc-parser` / `@babel/parser`）。
 
-> 真实项目里的六类高频自研场景与选型判断，见 [附录：插件的高频使用场景](./appendix-plugin-scenarios.md)。
+> 真实项目里的六类高频自研场景与选型判断，见 [附录：插件的高频使用场景](../plugins/appendix-plugin-scenarios.md)。
 
 ## 四、用 inspect 看管线
 
@@ -235,7 +235,7 @@ devtools: {
 - `handleHotUpdate`：自定义哪些文件变化触发 HMR。
 - `configurePreviewServer`：给 `vite preview` 也挂中间件。
 - 发布插件的最小结构：`package.json` 的 `exports` + `peerDependencies: { vite: '^8.0.0' }` + `name` 带前缀。
-- 常用插件怎么选：见 [附录：开发必备插件清单](./appendix-plugins.md)。
+- 常用插件怎么选：见 [附录：开发必备插件清单](../plugins/appendix-plugins.md)。
 - 阅读：<https://vite.dev/guide/api-plugin>
 
 ## 对照答案
