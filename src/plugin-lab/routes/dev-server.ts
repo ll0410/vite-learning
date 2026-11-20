@@ -7,4 +7,10 @@ export const devServerRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/plugins/dev-server/DevServerDemos.vue'),
     props: { scenario: 'mock-api' },
   },
+  {
+    path: '/plugins/dev-server/proxy-fallback-demo',
+    name: 'dev-server-proxy-fallback',
+    component: () => import('@/views/plugins/dev-server/DevServerDemos.vue'),
+    props: { scenario: 'proxy-fallback' },
+  },
 ]

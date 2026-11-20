@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
-withDefaults(defineProps<{ scenario?: 'mock-api' }>(), {
+withDefaults(defineProps<{ scenario?: 'mock-api' | 'proxy-fallback' }>(), {
   scenario: 'mock-api',
 })
 
@@ -26,6 +26,30 @@ async function loadUsers() {
     mockError.value = error instanceof Error ? error.message : String(error)
   }
 }
+
+interface ProxyResult {
+  source: 'primary' | 'fallback'
+  message: string
+  reason?: string
+}
+
+const proxyResult = ref<ProxyResult | null>(null)
+const proxyError = ref('')
+const proxyLoading = ref(false)
+
+async function requestProxy(mode: 'success' | 'http-error' | 'network-error') {
+  proxyLoading.value = true
+  proxyError.value = ''
+  try {
+    const response = await fetch(`/api/lab/proxy/resource?mode=${mode}`)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    proxyResult.value = (await response.json()) as ProxyResult
+  } catch (error) {
+    proxyError.value = error instanceof Error ? error.message : String(error)
+  } finally {
+    proxyLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -45,6 +69,25 @@ async function loadUsers() {
           {{ user.name }} · {{ user.role }}
         </li>
       </ul>
+    </article>
+
+    <article v-else-if="scenario === 'proxy-fallback'" class="panel">
+      <p class="eyebrow">15 · 本地转发与错误兜底</p>
+      <h1>Proxy fallback</h1>
+      <p>转发目标使用 dev server 的实际监听端口。选择场景后观察响应来源。</p>
+      <div class="actions">
+        <button type="button" :disabled="proxyLoading" @click="requestProxy('success')">
+          主接口成功
+        </button>
+        <button type="button" :disabled="proxyLoading" @click="requestProxy('http-error')">
+          模拟主接口失败
+        </button>
+        <button type="button" :disabled="proxyLoading" @click="requestProxy('network-error')">
+          模拟网络错误
+        </button>
+      </div>
+      <p v-if="proxyError" class="error" role="alert">{{ proxyError }}</p>
+      <pre v-if="proxyResult" class="result" data-testid="proxy-result">{{ JSON.stringify(proxyResult, null, 2) }}</pre>
     </article>
   </section>
 </template>
@@ -91,6 +134,25 @@ button {
 
 button:hover {
   background: #1d4ed8;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.result {
+  overflow: auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  font-size: 13px;
 }
 
 .users {

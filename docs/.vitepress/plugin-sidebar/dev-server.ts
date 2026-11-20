@@ -5,5 +5,6 @@ export const devServerSidebar: DefaultTheme.SidebarItem = {
   collapsed: true,
   items: [
     { text: '14. Mock API', link: '/plugins/dev-server/01-mock-api' },
+    { text: '15. 代理转发兜底', link: '/plugins/dev-server/02-proxy-fallback' },
   ],
 }

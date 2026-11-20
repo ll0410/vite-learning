@@ -11,5 +11,12 @@ export const devServerCategory: PluginLabCategory = {
       demo: '/plugins/dev-server/mock-api',
       verify: '请求 /api/mock/users，确认页面与 Home 均返回 Alice、Bob、Carol 三个用户。',
     },
+    {
+      id: 'dev-server-proxy-fallback',
+      title: '15. 本地代理特殊逻辑与接口转发兜底',
+      guide: '/plugins/dev-server/02-proxy-fallback',
+      demo: '/plugins/dev-server/proxy-fallback-demo',
+      verify: '分别验证主接口成功、HTTP 503 和网络错误，确认来源为 primary 或 fallback。',
+    },
   ],
 }
