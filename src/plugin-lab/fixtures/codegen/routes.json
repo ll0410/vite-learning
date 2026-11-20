@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/users",
+    "name": "user-list",
+    "title": "用户列表"
+  },
+  {
+    "path": "/users/:id",
+    "name": "user-detail",
+    "title": "用户详情"
+  }
+]

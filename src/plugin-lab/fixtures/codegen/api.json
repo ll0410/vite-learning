@@ -1,0 +1,7 @@
+[
+  {
+    "name": "getUsers",
+    "path": "/api/mock/users",
+    "method": "GET"
+  }
+]
