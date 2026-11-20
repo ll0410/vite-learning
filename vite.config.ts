@@ -27,6 +27,20 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
+      {
+        name: 'lab:plugin-lab-spa-fallback',
+        apply: 'serve',
+        configureServer(server) {
+          server.middlewares.use((req, _res, next) => {
+            const url = new URL(req.url ?? '/', 'http://localhost')
+            const isLabRoute = url.pathname === '/plugins' || url.pathname.startsWith('/plugins/')
+            if (req.headers.accept?.includes('text/html') && isLabRoute && !/\.[^/]+$/.test(url.pathname)) {
+              req.url = `/index.html${url.search}`
+            }
+            next()
+          })
+        },
+      },
       vue(),
       ...codeGenerationPlugins(),
       buildStampPlugin(),
