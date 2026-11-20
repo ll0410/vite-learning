@@ -1,5 +1,6 @@
 // ch10-1：虚拟模块插件。
 // 浏览器里 import 'virtual:app-info'，但磁盘上根本不存在这个文件。
+import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import type { Plugin } from 'vite'
 
@@ -9,9 +10,24 @@ const RESOLVED_ID = '\0' + VIRTUAL_ID
 
 export function appInfoPlugin(): Plugin {
   const builtAt = new Date().toISOString()
+  let gitCommit = 'unavailable'
+  let mode = ''
 
   return {
     name: 'lab:virtual-app-info',
+
+    configResolved(config) {
+      mode = config.mode
+      try {
+        gitCommit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], {
+          cwd: config.root,
+          encoding: 'utf-8',
+        }).trim()
+      } catch {
+        // 从不含 .git 的源码包构建时仍可保留其他版本信息。
+        gitCommit = 'unavailable'
+      }
+    },
 
     resolveId(id) {
       if (id === VIRTUAL_ID) return RESOLVED_ID
@@ -29,6 +45,8 @@ export function appInfoPlugin(): Plugin {
         version: pkg.version,
         vite: pkg.devDependencies.vite,
         builtAt,
+        gitCommit,
+        mode,
       })}`
     },
   }

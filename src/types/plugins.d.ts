@@ -5,6 +5,8 @@ declare module 'virtual:app-info' {
     version: string
     vite: string
     builtAt: string
+    gitCommit: string
+    mode: string
   }
   export default info
 }

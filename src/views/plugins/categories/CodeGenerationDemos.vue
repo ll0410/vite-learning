@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { getUsers, type GeneratedUser } from 'virtual:generated-api'
 import generatedRoutes from 'virtual:generated-routes'
 import messages from 'virtual:generated-i18n'
+import appInfo from 'virtual:app-info'
 
 const users = ref<GeneratedUser[]>([])
 const loading = ref(false)
@@ -75,6 +76,23 @@ function toggleLocale() {
           <p><code>virtual:generated-i18n · {{ locale }}</code></p>
         </article>
       </div>
+    </section>
+
+    <section id="build-constants" class="demo-section">
+      <h2>2. 编译期常量：版本、时间、Git commit 与环境</h2>
+      <article class="panel">
+        <table>
+          <tbody>
+            <tr><th>name</th><td>{{ appInfo.name }}</td></tr>
+            <tr><th>version</th><td>{{ appInfo.version }}</td></tr>
+            <tr><th>vite</th><td>{{ appInfo.vite }}</td></tr>
+            <tr><th>builtAt</th><td><time :datetime="appInfo.builtAt">{{ appInfo.builtAt }}</time></td></tr>
+            <tr><th>gitCommit</th><td><code>{{ appInfo.gitCommit }}</code></td></tr>
+            <tr><th>mode</th><td><code>{{ appInfo.mode }}</code></td></tr>
+          </tbody>
+        </table>
+        <p class="muted">以上值由 virtual:app-info 在配置解析和模块加载阶段生成，不读取浏览器时间。</p>
+      </article>
     </section>
   </div>
 </template>
