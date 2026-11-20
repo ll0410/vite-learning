@@ -46,6 +46,16 @@ onMounted(() => {
 
 const mainEntry = document.querySelector<HTMLMetaElement>('meta[name="plugin-lab-entry"]')?.content ?? ''
 const mainEntryTitle = document.title
+
+const resourceHints = Array.from(
+  document.querySelectorAll<HTMLLinkElement>(
+    'link[data-html-injection="preconnect"], link[data-html-injection="dns-prefetch"]',
+  ),
+).map((link) => ({
+  rel: link.rel,
+  href: link.getAttribute('href') ?? '',
+  crossorigin: link.getAttribute('crossorigin'),
+}))
 </script>
 
 <template>
@@ -117,6 +127,24 @@ const mainEntryTitle = document.title
           打开 /admin.html 对比 Admin 入口
         </a>
       </p>
+    </section>
+
+    <section id="preconnect" class="demo-panel">
+      <p class="eyebrow">条目 13 · 资源提示</p>
+      <h2>本地 preconnect / dns-prefetch</h2>
+      <p>重复配置已归一化；下表直接读取当前文档 head 中的 link 元素。</p>
+      <table data-testid="resource-hints">
+        <thead>
+          <tr><th>rel</th><th>href</th><th>crossorigin</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="hint in resourceHints" :key="`${hint.rel}-${hint.href}`" :data-rel="hint.rel" :data-href="hint.href">
+            <td><code>{{ hint.rel }}</code></td>
+            <td><code>{{ hint.href }}</code></td>
+            <td>{{ hint.crossorigin ?? '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </section>
 </template>
@@ -228,5 +256,18 @@ h1 {
 
 [data-remaining='true'] {
   color: #b91c1c;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
 }
 </style>

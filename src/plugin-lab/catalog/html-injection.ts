@@ -25,5 +25,12 @@ export const htmlInjectionCategory: PluginLabCategory = {
       demo: '/plugins/html-injection#mpa-entry',
       verify: '对比 main/admin 的 meta 与 title，并检查两个构建 HTML 和资源路径。',
     },
+    {
+      id: 'html-preconnect',
+      title: '13. 注入 preconnect 做性能优化',
+      guide: '/plugins/html-injection/04-preconnect',
+      demo: '/plugins/html-injection#preconnect',
+      verify: '列出本地 preconnect/dns-prefetch 的实际 link，检查归一化、去重和位置。',
+    },
   ],
 }
