@@ -5,10 +5,10 @@ export interface PreconnectOptions {
 }
 
 const localOrigins = [
-  'http://localhost:5214/',
-  'http://localhost:5214',
-  'http://127.0.0.1:5214/',
-  'http://127.0.0.1:5214',
+  'http://localhost:5173/',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173/',
+  'http://127.0.0.1:5173',
 ]
 
 function normalizeOrigins(origins: string[]): URL[] {

@@ -18,7 +18,7 @@ origin 配置数组（含重复值）
   → injectTo: 'head-prepend'，尽早交给浏览器
 ```
 
-`URL.origin` 会把 `http://localhost:5214/` 和 `http://localhost:5214` 归为同一来源。Preconnect 必须保留端口，因为端口不同就是不同 origin；DNS 预取只关心 hostname，所以使用另一组 hostname 去重结果。
+`URL.origin` 会把 `http://localhost:5173/` 和 `http://localhost:5173` 归为同一来源。Preconnect 必须保留端口，因为端口不同就是不同 origin；DNS 预取只关心 hostname，所以使用另一组 hostname 去重结果。
 
 ## 最小实现
 
@@ -77,13 +77,13 @@ export function htmlInjectionPlugins(): Plugin[] {
 }
 ```
 
-也可以传入 `preconnect({ origins: [...] })`。默认数组有四个字符串，但只对应两个唯一本地 origin，因此最终应有两个 preconnect 和两个 dns-prefetch，而不是八个标签。
+也可以传入 `preconnect({ origins: [...] })`。默认端口与主应用的 `server.port` 一致，固定为 `5173`，不读取 worktree 或临时验证端口；使用其他端口或真实跨域源时应显式传入 `origins`。默认数组有四个字符串，但只对应两个唯一本地 origin，因此最终应有两个 preconnect 和两个 dns-prefetch，而不是八个标签。
 
 ## 验证步骤
 
-1. 启动 `pnpm exec vite --port 5214`，打开 `http://localhost:5214/plugins/html-injection` 的“本地 preconnect / dns-prefetch”面板。
-2. 页面应列出四个实际 link：`http://localhost:5214` 与 `http://127.0.0.1:5214` 的 preconnect，以及 `//localhost` 与 `//127.0.0.1` 的 dns-prefetch。检查 preconnect 的 `crossorigin` 属性。
-3. 请求 `curl http://localhost:5214/`，确认标签位于 `<head>` 前部、每种 rel/href 组合唯一，并排在模块脚本之前。
+1. 启动 `pnpm exec vite --port 5173`，打开 `http://localhost:5173/plugins/html-injection` 的“本地 preconnect / dns-prefetch”面板。
+2. 页面应列出四个实际 link：`http://localhost:5173` 与 `http://127.0.0.1:5173` 的 preconnect，以及 `//localhost` 与 `//127.0.0.1` 的 dns-prefetch。检查 preconnect 的 `crossorigin` 属性。
+3. 请求 `curl http://localhost:5173/`，确认标签位于 `<head>` 前部、每种 rel/href 组合唯一，并排在模块脚本之前。
 4. 执行 `pnpm build`，分别检查 `dist/index.html` 和 `dist/admin.html`；两个 MPA 入口都应各有一组唯一 link，且没有路径残留或重复尾斜杠变体。
 5. 执行 `pnpm docs:build` 与 `git diff --check`。
 
