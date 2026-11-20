@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+import conventionalRoutes from 'virtual:conventional-routes'
 
 export const codeGenerationRoutes: RouteRecordRaw[] = [
   {
@@ -6,4 +7,5 @@ export const codeGenerationRoutes: RouteRecordRaw[] = [
     name: 'plugin-code-generation',
     component: () => import('@/views/plugins/categories/CodeGenerationDemos.vue'),
   },
+  ...conventionalRoutes,
 ]

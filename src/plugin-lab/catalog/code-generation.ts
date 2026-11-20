@@ -18,5 +18,12 @@ export const codeGenerationCategory: PluginLabCategory = {
       demo: '/plugin-lab/code-generation#build-constants',
       verify: '核对版本、构建时间、Git 短提交和当前 Vite mode。',
     },
+    {
+      id: 'auto-discovery',
+      title: '3. 组件自动注册、目录约定式路由',
+      guide: '/plugins/code-generation/03-auto-discovery.html',
+      demo: '/plugin-lab/code-generation#auto-discovery',
+      verify: '渲染自动注册组件，并导航、刷新真实的约定式页面。',
+    },
   ],
 }

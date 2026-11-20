@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { getUsers, type GeneratedUser } from 'virtual:generated-api'
 import generatedRoutes from 'virtual:generated-routes'
 import messages from 'virtual:generated-i18n'
@@ -92,6 +93,24 @@ function toggleLocale() {
           </tbody>
         </table>
         <p class="muted">以上值由 virtual:app-info 在配置解析和模块加载阶段生成，不读取浏览器时间。</p>
+      </article>
+    </section>
+
+    <section id="auto-discovery" class="demo-section">
+      <h2>3. 组件自动注册、目录约定式路由</h2>
+      <article class="panel">
+        <h3>无手写 import 的全局组件</h3>
+        <LabAutoBadge label="LabAutoBadge 来自 src/components/auto，由 setup 自动注册" />
+        <p class="muted">本模板只写组件标签，注册代码在 virtual:auto-components 中生成。</p>
+      </article>
+      <article class="panel route-panel">
+        <h3>可实际导航和刷新的页面</h3>
+        <nav>
+          <RouterLink to="/conventional">/conventional</RouterLink>
+          <RouterLink to="/conventional/about">/conventional/about</RouterLink>
+          <RouterLink to="/conventional/users/42">/conventional/users/42</RouterLink>
+        </nav>
+        <p class="muted">页面来自 src/views/conventional，动态 import 会形成独立页面 chunk。</p>
       </article>
     </section>
   </div>

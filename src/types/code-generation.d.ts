@@ -34,3 +34,22 @@ declare module 'virtual:generated-i18n' {
   const messages: Record<'zh-CN' | 'en-US', GeneratedMessages>
   export default messages
 }
+
+declare module 'virtual:auto-components' {
+  import type { Component } from 'vue'
+
+  export interface AutoComponentDefinition {
+    name: string
+    component: Component
+  }
+
+  const components: AutoComponentDefinition[]
+  export default components
+}
+
+declare module 'virtual:conventional-routes' {
+  import type { RouteRecordRaw } from 'vue-router'
+
+  const routes: RouteRecordRaw[]
+  export default routes
+}
