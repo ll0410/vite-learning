@@ -25,5 +25,12 @@ export const codeTransformCategory: PluginLabCategory = {
       demo: '/plugins/code-transform#tenant-build',
       verify: 'dev 显示默认品牌；dist 与 dist-beta 分别只含对应品牌、主题色和开关配置。',
     },
+    {
+      id: 'conditional-build',
+      title: '8. 生产配置替换与条件编译',
+      guide: '/plugins/code-transform/04-conditional-build',
+      buildOnly: true,
+      verify: 'dev 保留公开占位符与 DEV_ONLY 块；build 替换公开 URL/布尔值并删除开发诊断哨兵。',
+    },
   ],
 }

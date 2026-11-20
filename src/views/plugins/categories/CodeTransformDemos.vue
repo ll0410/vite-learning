@@ -1,6 +1,7 @@
 <!-- lab:inject-tracking -->
 <script setup lang="ts">
 import '@/plugin-lab/fixtures/code-transform/strip-debug-fixture'
+import '@/plugin-lab/fixtures/code-transform/conditional-build-fixture'
 import { trackingEvents } from '@/plugin-lab/tracking'
 
 const docsBase = 'http://localhost:5174'
@@ -71,6 +72,18 @@ const tenant = {
 TENANT=beta pnpm build --outDir dist-beta</code></pre>
       <a :href="`${docsBase}/plugins/code-transform/03-tenant-build`" target="_blank" rel="noreferrer">
         阅读 tenant-build 指南与对照构建命令
+      </a>
+    </article>
+
+    <article id="conditional-build" class="panel">
+      <h2>8. 生产配置替换与条件编译</h2>
+      <p>
+        本项不提供 dev 效果示例：目标是比较 dev/prod 模块差异。插件只在 build 中替换公开
+        URL/布尔占位符并删除显式 DEV_ONLY 块，dev 必须保留对照输入。
+      </p>
+      <pre><code>pnpm build</code></pre>
+      <a :href="`${docsBase}/plugins/code-transform/04-conditional-build`" target="_blank" rel="noreferrer">
+        阅读 conditional-build 指南与产物断言
       </a>
     </article>
   </section>
