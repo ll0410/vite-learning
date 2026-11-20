@@ -19,6 +19,12 @@
 | 11 | [代码分割](./ch11-code-splitting.md) | 首屏为什么能变小？ | 50m | `ls dist/assets/vendor-*` |
 | 12 | [性能优化](./ch12-performance.md) | 优化的抓手有哪些？ | 60m | `pnpm build:analyze` 生成 stats.html |
 
+## 附录
+
+- [Vite 8 的关键变化](./appendix-vite8-changes.md)：技术栈替换与配置项映射。
+- [插件的高频使用场景](./appendix-plugin-scenarios.md)：六类自研场景与选型判断。
+- [开发必备插件清单](./appendix-plugins.md)：按必装 / 推荐 / 按需分档。
+
 ## 每章的固定结构
 
 1. **本章目标**：3–4 条可验证的目标。

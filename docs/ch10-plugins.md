@@ -120,6 +120,8 @@ transform(code, id) {
 - 返回 `map: null` 表示不提供 sourcemap；真实插件应生成 sourcemap，否则调试体验会退化。
 - **不要用正则做复杂的代码改写**，生产级插件应使用 AST（如 `oxc-parser` / `@babel/parser`）。
 
+> 真实项目里的六类高频自研场景与选型判断，见 [附录：插件的高频使用场景](./appendix-plugin-scenarios.md)。
+
 ## 四、用 inspect 看管线
 
 `vite-plugin-inspect` 会把每个模块经过的插件与耗时可视化：
@@ -128,11 +130,49 @@ transform(code, id) {
 http://localhost:5173/__inspect/
 ```
 
-打开后：
+### 先解决一个坑：关闭客户端鉴权
 
-1. 左侧选择 `/src/views/Home.vue`。
-2. 右侧能看到它被 `lab:virtual-app-info`、`@vitejs/plugin-vue`、`lab:strip-debug` 等插件处理的顺序与中间结果。
-3. 这是理解「插件到底做了什么」最快的方式。
+Vite 8 内置了 devtools 鉴权机制。独立打开 `__inspect/` 页面时，浏览器没有经过主页面的鉴权握手，会拿到 `401` 响应，导致页面黑屏、什么都不显示。
+
+在 `vite.config.ts` 里加一行：
+
+```ts
+devtools: {
+  clientAuth: false,  // 允许直接访问 /__inspect/、/__vite-inspect/ 等独立页面
+},
+```
+
+不加这行的话，你从主页面点进去可能没事，但直接在地址栏敲 `http://localhost:5173/__inspect/` 大概率是白/黑屏。
+
+**但注意**：插件只在对应钩子被触发时才出现在某个模块的管线里，不会全部出现在每个模块上。
+
+### 在 Home.vue 上能看到谁
+
+左侧选 `/src/views/Home.vue` → 右侧 TRANSFORM STACK：
+
+- `__load__` — Vite 内部 loader，读取 .vue 文件原始内容
+- `vite:vue` — `@vitejs/plugin-vue` 编译 SFC
+- `vite:import-analysis` — Vite 内置的 import 重写（把裸路径改成 `/@id/xxx`）
+
+这三个是 dev 下 Home.vue 必经的 transform 链。**你的自定义插件一个都不会出现在这里**，原因见下。
+
+### 自定义插件在哪看
+
+| 插件 | 钩子 | 在 inspect 哪里看 |
+|------|------|------------------|
+| `lab:virtual-app-info` | `resolveId` + `load` | 左侧找 `virtual:app-info`（或 `\0virtual:app-info`），右侧 LOAD 区能看到它返回的 JSON |
+| `lab:strip-debug` | `transform` + `apply: 'build'` | **dev 下不运行！** `pnpm build` 后构建期的 pipeline 里才会出现 |
+| `lab:append-build-stamp` | `transformIndexHtml` | 左侧选 `/index.html`，或在 devtools Network 里看 HTML 响应的 `<meta name="build-stamp">` |
+| `lab:mock-api` | `configureServer` | 这个挂的是中间件，不参与模块处理，inspect 里看不到。用浏览器 Network 或 `curl http://localhost:5173/api/mock/users` 验证 |
+
+### 关键认识
+
+**`vite-plugin-inspect` 展示的是「某一个模块」经过的插件管线**，不是「所有插件」的列表。
+
+一个插件要出现在 inspect 里，必须满足：
+1. 有 `transform` / `load` / `resolveId` 这类模块处理钩子（光有 `configureServer` / `transformIndexHtml` 不算）
+2. 这个钩子**确实被该模块触发了**（比如 `strip-debug` 只在 build 期、只处理 src/ 下含 `console.debug` 的文件）
+3. `apply` 没有把它排除在当前模式之外
 
 ## 五、动手步骤
 
@@ -152,7 +192,10 @@ http://localhost:5173/__inspect/
    curl http://localhost:5173/api/mock/users
    ```
 
-4. 打开 <http://localhost:5173/__inspect/>，检查 `Home.vue` 与 `virtual:app-info` 的插件链。
+4. 打开 <http://localhost:5173/__inspect/>：
+   - 左侧选 `/src/views/Home.vue`，确认 transform 链是 `__load__` → `vite:vue` → `vite:import-analysis`
+   - 左侧搜索 `virtual:app-info`（或滚动到 `\0virtual:app-info`），右侧能看到 `lab:virtual-app-info` 插件的 load 结果
+   - `lab:strip-debug` dev 下不运行，构建后才会参与管线
 
 5. 生产构建：
 
@@ -192,6 +235,7 @@ http://localhost:5173/__inspect/
 - `handleHotUpdate`：自定义哪些文件变化触发 HMR。
 - `configurePreviewServer`：给 `vite preview` 也挂中间件。
 - 发布插件的最小结构：`package.json` 的 `exports` + `peerDependencies: { vite: '^8.0.0' }` + `name` 带前缀。
+- 常用插件怎么选：见 [附录：开发必备插件清单](./appendix-plugins.md)。
 - 阅读：<https://vite.dev/guide/api-plugin>
 
 ## 对照答案
