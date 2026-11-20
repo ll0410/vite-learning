@@ -6,10 +6,15 @@ import { defineConfig, loadEnv } from 'vite'
 import inspect from 'vite-plugin-inspect'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { compression } from 'vite-plugin-compression2'
-import { appInfoPlugin } from './plugins/virtual-app-info'
-import { buildStampPlugin } from './plugins/append-build-stamp'
-import { mockApiPlugin } from './plugins/mock-api'
-import { stripDebugPlugin } from './plugins/strip-debug'
+import { buildStampPlugin } from './plugins/append-build-stamp.ts'
+import { codeGenerationPlugins } from './plugins/code-generation/index.ts'
+import { codeTransformPlugins } from './plugins/code-transform/index.ts'
+import { autoImportPlugins } from './plugins/auto-import/index.ts'
+import { htmlInjectionPlugins } from './plugins/html/index.ts'
+import { devServerPlugins } from './plugins/dev-server/index.ts'
+import { buildOutputPlugins } from './plugins/build-output/index.ts'
+import { customFilePlugins } from './plugins/custom-files/index.ts'
+import { migrationPlugins } from './plugins/migration/index.ts'
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -23,10 +28,15 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       vue(),
-      appInfoPlugin(),
+      ...codeGenerationPlugins(),
       buildStampPlugin(),
-      mockApiPlugin(),
-      stripDebugPlugin(),
+      ...codeTransformPlugins(),
+      ...autoImportPlugins(),
+      ...htmlInjectionPlugins(),
+      ...devServerPlugins(),
+      ...buildOutputPlugins(),
+      ...customFilePlugins(),
+      ...migrationPlugins(),
       // 可视化插件管线：dev 下访问 /__inspect/
       inspect(),
       // ch12：只有在 ANALYZE=true 时才生成产物分析报告（pnpm build:analyze）
@@ -87,6 +97,7 @@ export default defineConfig(({ command, mode }) => {
       // hmr: { port: 24678, overlay: true },
     },
     devtools: {
+      apply: 'serve',
       clientAuth: false,
     },
 

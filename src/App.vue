@@ -9,6 +9,7 @@ const navItems = [
   { to: '/', label: 'Home' },
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/assets', label: '静态资源' },
+  { to: '/plugins', label: '插件' },
   { to: '/about', label: 'About' },
 ]
 </script>

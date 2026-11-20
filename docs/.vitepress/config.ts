@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { pluginGuideSidebar } from './plugin-sidebar'
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -42,9 +43,11 @@ export default defineConfig({
         },
       ],
       '/plugins/': [
+        ...pluginGuideSidebar,
         {
           text: '插件手册',
           items: [
+            { text: '场景指南首页', link: '/plugins/' },
             { text: '高频使用场景', link: '/plugins/appendix-plugin-scenarios' },
             { text: '开发必备插件清单', link: '/plugins/appendix-plugins' },
           ],
