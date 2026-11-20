@@ -43,6 +43,9 @@ onMounted(() => {
   }
   skeletonPresent.value = document.getElementById('plugin-lab-skeleton') !== null
 })
+
+const mainEntry = document.querySelector<HTMLMetaElement>('meta[name="plugin-lab-entry"]')?.content ?? ''
+const mainEntryTitle = document.title
 </script>
 
 <template>
@@ -100,6 +103,20 @@ onMounted(() => {
         {{ skeletonPresent ? '骨架仍有残留' : '骨架已被 Vue mount 替换' }}
       </p>
       <p class="muted">静态 HTML 中可见骨架；组件树挂载后，此处确认它已消失。</p>
+    </section>
+
+    <section id="mpa-entry" class="demo-panel">
+      <p class="eyebrow">条目 12 · config + transformIndexHtml</p>
+      <h2>MPA 按入口注入标签</h2>
+      <p data-testid="main-entry" :data-entry="mainEntry">
+        当前主 SPA 标识：<strong>{{ mainEntry }}</strong>
+      </p>
+      <p data-testid="main-entry-title">当前标题：<code>{{ mainEntryTitle }}</code></p>
+      <p>
+        <a data-testid="admin-link" href="/admin.html" target="_blank" rel="noreferrer">
+          打开 /admin.html 对比 Admin 入口
+        </a>
+      </p>
     </section>
   </section>
 </template>

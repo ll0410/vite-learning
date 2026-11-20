@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin HTML 原始标题</title>
+  </head>
+  <body>
+    <main id="admin-app">
+      <h1>Admin MPA 入口</h1>
+      <p>这是独立的 admin.html，不会启动主 SPA 的 Vue Router。</p>
+      <p>入口标识：<strong id="entry-name">读取中</strong></p>
+      <p>注入标题：<code id="entry-title">读取中</code></p>
+      <p><a href="/plugins/html-injection">返回主 SPA 的 HTML 注入实验</a></p>
+    </main>
+    <script type="module" src="/src/mpa/admin.ts"></script>
+  </body>
+</html>

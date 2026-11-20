@@ -18,5 +18,12 @@ export const htmlInjectionCategory: PluginLabCategory = {
       demo: '/plugins/html-injection#head-assets',
       verify: '读取 CSP meta 与主题计算样式，确认 Vue 挂载后骨架无残留。',
     },
+    {
+      id: 'html-mpa-entry',
+      title: '12. MPA 按入口注入不同标签',
+      guide: '/plugins/html-injection/03-mpa-entry',
+      demo: '/plugins/html-injection#mpa-entry',
+      verify: '对比 main/admin 的 meta 与 title，并检查两个构建 HTML 和资源路径。',
+    },
   ],
 }
