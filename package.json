@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
+    "@vitejs/devtools": "^0.8.3",
     "@vitejs/plugin-vue": "^6.0.11",
     "autoprefixer": "^10.6.2",
     "postcss": "^8.5.33",

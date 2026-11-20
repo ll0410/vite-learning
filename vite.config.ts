@@ -16,8 +16,7 @@ export default defineConfig(({ command, mode }) => {
 
   console.debug(`[vite.config] command=${command}, mode=${mode}`)
   console.debug(
-    `[vite.config] VITE_API_BASE=${env.VITE_API_BASE}, DB_PASSWORD=${
-      env.DB_PASSWORD ? '已读取（仅构建期）' : '未设置'
+    `[vite.config] VITE_API_BASE=${env.VITE_API_BASE}, DB_PASSWORD=${env.DB_PASSWORD ? '已读取（仅构建期）' : '未设置'
     }`,
   )
 
@@ -33,13 +32,13 @@ export default defineConfig(({ command, mode }) => {
       // ch12：只有在 ANALYZE=true 时才生成产物分析报告（pnpm build:analyze）
       ...(process.env.ANALYZE === 'true'
         ? [
-            visualizer({
-              filename: 'dist/stats.html',
-              gzipSize: true,
-              brotliSize: true,
-              open: false,
-            }),
-          ]
+          visualizer({
+            filename: 'dist/stats.html',
+            gzipSize: true,
+            brotliSize: true,
+            open: false,
+          }),
+        ]
         : []),
       // ch12：构建时额外产出 .gz / .br，便于对比服务端压缩后的体积
       compression({
@@ -86,6 +85,9 @@ export default defineConfig(({ command, mode }) => {
       // ch09：HMR 默认走 dev server 同一端口，一般无需配置。
       // 需要自定义 WebSocket 时：
       // hmr: { port: 24678, overlay: true },
+    },
+    devtools: {
+      clientAuth: false,
     },
 
     build: {
