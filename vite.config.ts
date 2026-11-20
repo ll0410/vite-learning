@@ -26,6 +26,7 @@ export default defineConfig(({ command, mode }) => {
   )
 
   return {
+    base: process.env.GITHUB_PAGES === 'true' ? '/vite-learning/' : '/',
     plugins: [
       {
         name: 'lab:plugin-lab-spa-fallback',

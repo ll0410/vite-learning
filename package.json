@@ -2,6 +2,10 @@
   "name": "vite-learning",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ll0410/vite-learning.git"
+  },
   "type": "module",
   "packageManager": "pnpm@10.34.9",
   "scripts": {

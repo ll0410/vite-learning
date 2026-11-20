@@ -22,6 +22,7 @@ const navItems = [
         <RouterLink v-for="item in navItems" :key="item.to" :to="item.to">
           {{ item.label }}
         </RouterLink>
+        <a href="https://github.com/ll0410/vite-learning" target="_blank" rel="noreferrer">GitHub</a>
       </nav>
     </header>
 

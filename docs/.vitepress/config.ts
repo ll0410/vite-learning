@@ -1,20 +1,35 @@
+import { existsSync, statSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 import { pluginGuideSidebar } from './plugin-sidebar'
+
+const base = process.env.GITHUB_PAGES === 'true' ? '/vite-learning/docs/' : '/'
+const repositoryRoot = fileURLToPath(new URL('../../', import.meta.url))
+const repositoryUrl = 'https://github.com/ll0410/vite-learning'
+const sourcePathPattern = /^(?:(?:plugins|src|docs|public)\/.*|vite\.config\.ts|package\.json|pnpm-lock\.yaml|index\.html|admin\.html)$/
 
 export default defineConfig({
   lang: 'zh-CN',
   title: 'Vite Learning',
   description: '10 小时动手实践 Vite 8：开发链路、构建链路、插件机制与性能优化',
+  base,
   lastUpdated: true,
   // 教程里的示例地址指向本地 demo 服务，构建时无需校验
   ignoreDeadLinks: [/^http:\/\/localhost/],
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}logo.svg` }]],
   themeConfig: {
     logo: '/logo.svg',
     nav: [
       { text: '入门', link: '/guide/', activeMatch: '/guide/' },
       { text: '插件', link: '/plugins/', activeMatch: '/plugins/' },
       { text: '性能', link: '/performance/', activeMatch: '/performance/' },
+      {
+        text: 'GitHub',
+        link: 'https://github.com/ll0410/vite-learning',
+        target: '_blank',
+        rel: 'noreferrer',
+      },
     ],
     sidebar: {
       '/guide/': [
@@ -81,6 +96,30 @@ export default defineConfig({
     footer: {
       message: '基于 Vite 8 + Vue 3 的动手学习项目',
       copyright: '仅用于学习与实践',
+    },
+  },
+  markdown: {
+    config(md) {
+      const renderCodeInline = md.renderer.rules.code_inline!
+
+      md.renderer.rules.code_inline = (tokens, idx, options, env, self) => {
+        const sourcePath = tokens[idx].content
+        const renderOriginal = () => renderCodeInline(tokens, idx, options, env, self)
+
+        // 仅链接真实仓库路径，保留历史文件、通配符和 dev 请求地址的原样。
+        if (!sourcePathPattern.test(sourcePath) || /[\s*?]/.test(sourcePath)) {
+          return renderOriginal()
+        }
+
+        const normalizedPath = sourcePath.replace(/\/+$/, '')
+        const absolutePath = resolve(repositoryRoot, normalizedPath)
+        if (!existsSync(absolutePath)) return renderOriginal()
+
+        const linkType = statSync(absolutePath).isDirectory() ? 'tree' : 'blob'
+        const encodedPath = normalizedPath.split('/').map(encodeURIComponent).join('/')
+        const href = `${repositoryUrl}/${linkType}/main/${encodedPath}`
+        return `<a href="${href}" target="_blank" rel="noreferrer">${renderOriginal()}</a>`
+      }
     },
   },
   vite: {

@@ -2,7 +2,8 @@
 import { RouterLink } from 'vue-router'
 import { pluginLabCategories } from '@/plugin-lab/catalog'
 
-const docsBase = 'http://localhost:5174'
+const docsBase = import.meta.env.DEV ? 'http://localhost:5174' : `${import.meta.env.BASE_URL}docs`
+const isDev = import.meta.env.DEV
 </script>
 
 <template>
@@ -13,7 +14,7 @@ const docsBase = 'http://localhost:5174'
     </p>
     <p class="links">
       <a :href="`${docsBase}/plugins/`" target="_blank" rel="noreferrer">插件开发指南</a>
-      <a href="/__inspect/" target="_blank" rel="noreferrer">打开 Inspect</a>
+      <a v-if="isDev" href="/__inspect/" target="_blank" rel="noreferrer">打开 Inspect</a>
     </p>
 
     <section v-for="category in pluginLabCategories" :key="category.id" class="category">
