@@ -49,7 +49,9 @@ this.emitFile({
 
 ## 配置接入
 
-插件已在 `plugins/build-output/index.ts` 中注册，顺序位于替换占位域名之后、SRI/静态文件之前，保证哈希基于已被替换的最终字符串。没有新增路由、页面、dev 中间件或网络调用。
+插件已在 `plugins/build-output/index.ts` 中注册，位于替换占位域名之后、SRI/静态文件之前，并以 `generateBundle: { order: 'post' }` 运行。仅靠插件数组顺序还不够：Vite 会把异步 chunk 的 CSS 等产物放到更晚的 `post` 阶段定稿，普通阶段算出的哈希会与磁盘文件不一致。`post` 阶段的执行顺序仍按插件数组排列，因此替换插件已经先完成。
+
+没有新增路由、页面、dev 中间件或网络调用。
 
 ## 可执行构建验证
 
@@ -81,10 +83,10 @@ for (const file of cdn.files) {
 if (cdnPaths.size !== Object.keys(version.files).length) throw new Error('两份清单文件数量不一致')
 if (cdn.files.some((file) => file.path.endsWith('.html'))) throw new Error('HTML 不应进入哈希清单')
 
-// 抽样独立重算，验证插件哈希与命令行结果一致。
-for (const file of cdn.files.filter((item) => item.path.endsWith('.js')).slice(0, 3)) {
+// 逐文件独立重算，验证插件哈希与最终磁盘内容一致。
+for (const file of cdn.files) {
   const actual = sha256(readFileSync(join(dist, file.path)))
-  if (actual !== file.sha256) throw new Error(`抽样哈希不一致: ${file.path}`)
+  if (actual !== file.sha256) throw new Error(`哈希不一致: ${file.path}`)
 }
 
 const recomputed = sha256(
@@ -119,6 +121,7 @@ shasum -a 256 dist/assets/index-*.js
 
 ## 常见坑
 
+- 只在普通 `generateBundle` 阶段计算哈希，会记录异步 CSS 等产物的旧内容；必须使用 `order: 'post'`，并用自定义断言逐文件复算，而不是只抽样几个 JS。
 - 在 `generateBundle` 之后才修改 chunk 内容，会让清单哈希与磁盘文件不一致。哈希插件必须排在所有内容改写插件之后。
 - 把 `dist` 目录整个扫一遍会混入上一轮遗留文件；以 `bundle` 为准，才能保证清单只包含本次构建。
 - 不要用 `path.join(baseUrl, file)` 拼 URL：Windows 会得到反斜杠，且容易产生双斜杠。`new URL(file, baseUrl)` 或显式字符串拼接更稳。

@@ -1,5 +1,5 @@
 // 附录 19：为可缓存的构建产物生成版本文件与 CDN 上传清单。
-// 学习点：generateBundle 中拿到的就是最终 chunk/asset 内容，可直接计算 SHA-256。
+// 学习点：在 post 阶段读取最终 chunk/asset 内容，可直接计算 SHA-256。
 import { createHash } from 'node:crypto'
 import type { Plugin } from 'vite'
 
@@ -21,46 +21,51 @@ export function deploymentArtifactsPlugin(): Plugin {
     name: 'lab:build-output:deployment-artifacts',
     apply: 'build',
 
-    generateBundle(_options, bundle) {
-      const hashes = new Map<string, string>()
+    // Vite 的部分产物（如异步 chunk 的 CSS）会在后续 post 钩子中定稿，
+    // 因此必须在 post 阶段计算哈希，否则 version.json 会记录过期内容。
+    generateBundle: {
+      order: 'post',
+      handler(_options, bundle) {
+        const hashes = new Map<string, string>()
 
-      for (const [fileName, output] of Object.entries(bundle)) {
-        // HTML 会在下一步被 SRI 插件改写，不能在这里记录会过期的哈希。
-        if (fileName.endsWith('.html') || MANIFEST_FILES.has(fileName)) continue
+        for (const [fileName, output] of Object.entries(bundle)) {
+          // HTML 会在 SRI 插件中被改写，不能在这里记录会过期的哈希。
+          if (fileName.endsWith('.html') || MANIFEST_FILES.has(fileName)) continue
 
-        const source = output.type === 'asset' ? output.source : output.code
-        hashes.set(fileName, sha256(source))
-      }
+          const source = output.type === 'asset' ? output.source : output.code
+          hashes.set(fileName, sha256(source))
+        }
 
-      const sorted = [...hashes.entries()].sort(([a], [b]) => a.localeCompare(b))
-      const version = sha256(sorted.map(([file, hash]) => `${file}:${hash}`).join('\n'))
+        const sorted = [...hashes.entries()].sort(([a], [b]) => a.localeCompare(b))
+        const version = sha256(sorted.map(([file, hash]) => `${file}:${hash}`).join('\n'))
 
-      const versionFile = {
-        version,
-        algorithm: 'sha256',
-        builtAt: new Date().toISOString(),
-        files: Object.fromEntries(sorted),
-      }
+        const versionFile = {
+          version,
+          algorithm: 'sha256',
+          builtAt: new Date().toISOString(),
+          files: Object.fromEntries(sorted),
+        }
 
-      const cdnManifest = {
-        baseUrl: CDN_BASE_URL,
-        files: sorted.map<CdnFile>(([file, hash]) => ({
-          path: file,
-          url: new URL(file, CDN_BASE_URL).href,
-          sha256: hash,
-        })),
-      }
+        const cdnManifest = {
+          baseUrl: CDN_BASE_URL,
+          files: sorted.map<CdnFile>(([file, hash]) => ({
+            path: file,
+            url: new URL(file, CDN_BASE_URL).href,
+            sha256: hash,
+          })),
+        }
 
-      this.emitFile({
-        type: 'asset',
-        fileName: 'version.json',
-        source: `${JSON.stringify(versionFile, null, 2)}\n`,
-      })
-      this.emitFile({
-        type: 'asset',
-        fileName: 'cdn-manifest.json',
-        source: `${JSON.stringify(cdnManifest, null, 2)}\n`,
-      })
+        this.emitFile({
+          type: 'asset',
+          fileName: 'version.json',
+          source: `${JSON.stringify(versionFile, null, 2)}\n`,
+        })
+        this.emitFile({
+          type: 'asset',
+          fileName: 'cdn-manifest.json',
+          source: `${JSON.stringify(cdnManifest, null, 2)}\n`,
+        })
+      },
     },
   }
 }
