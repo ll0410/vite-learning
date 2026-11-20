@@ -19,4 +19,10 @@ export const devServerRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/plugins/dev-server/DevServerDemos.vue'),
     props: { scenario: 'debug-endpoints' },
   },
+  {
+    path: '/plugins/dev-server/auth-upload-demo',
+    name: 'dev-server-auth-upload',
+    component: () => import('@/views/plugins/dev-server/DevServerDemos.vue'),
+    props: { scenario: 'auth-upload' },
+  },
 ]

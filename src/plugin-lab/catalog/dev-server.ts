@@ -25,5 +25,12 @@ export const devServerCategory: PluginLabCategory = {
       demo: '/plugins/dev-server/debug-endpoints-demo',
       verify: '检查配置白名单和 GET/POST 状态码，清 moduleGraph 后观察 full-reload。',
     },
+    {
+      id: 'dev-server-auth-upload',
+      title: '17. 模拟 SSO 登录回调与文件上传',
+      guide: '/plugins/dev-server/04-auth-upload',
+      demo: '/plugins/dev-server/auth-upload-demo',
+      verify: '验证教学 code、Cookie 回跳和会话；上传小文件返回大小与 SHA-256，超限返回 413。',
+    },
   ],
 }

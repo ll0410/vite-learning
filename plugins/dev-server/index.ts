@@ -2,7 +2,13 @@ import type { Plugin } from 'vite'
 import { mockApiPlugin } from '../mock-api.ts'
 import { proxyFallbackPlugin } from './proxy-fallback.ts'
 import { debugEndpointsPlugin } from './debug-endpoints.ts'
+import { authUploadPlugin } from './auth-upload.ts'
 
 export function devServerPlugins(): Plugin[] {
-  return [mockApiPlugin(), proxyFallbackPlugin(), debugEndpointsPlugin()]
+  return [
+    mockApiPlugin(),
+    proxyFallbackPlugin(),
+    debugEndpointsPlugin(),
+    authUploadPlugin(),
+  ]
 }
