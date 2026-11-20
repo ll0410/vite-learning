@@ -18,5 +18,12 @@ export const devServerCategory: PluginLabCategory = {
       demo: '/plugins/dev-server/proxy-fallback-demo',
       verify: '分别验证主接口成功、HTTP 503 和网络错误，确认来源为 primary 或 fallback。',
     },
+    {
+      id: 'dev-server-debug-endpoints',
+      title: '16. 调试接口：查看运行时配置、清缓存',
+      guide: '/plugins/dev-server/03-debug-endpoints',
+      demo: '/plugins/dev-server/debug-endpoints-demo',
+      verify: '检查配置白名单和 GET/POST 状态码，清 moduleGraph 后观察 full-reload。',
+    },
   ],
 }

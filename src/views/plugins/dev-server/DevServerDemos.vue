@@ -2,9 +2,12 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
-withDefaults(defineProps<{ scenario?: 'mock-api' | 'proxy-fallback' }>(), {
-  scenario: 'mock-api',
-})
+withDefaults(
+  defineProps<{ scenario?: 'mock-api' | 'proxy-fallback' | 'debug-endpoints' }>(),
+  {
+    scenario: 'mock-api',
+  },
+)
 
 interface MockUser {
   id: number
@@ -50,6 +53,39 @@ async function requestProxy(mode: 'success' | 'http-error' | 'network-error') {
     proxyLoading.value = false
   }
 }
+
+interface DebugConfig {
+  mode: string
+  pluginNames: string[]
+  server: { port: number; strictPort: boolean }
+}
+
+const debugConfig = ref<DebugConfig | null>(null)
+const debugResult = ref('')
+const debugError = ref('')
+
+async function loadDebugConfig() {
+  debugError.value = ''
+  try {
+    const response = await fetch('/api/lab/debug/config')
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    debugConfig.value = (await response.json()) as DebugConfig
+  } catch (error) {
+    debugError.value = error instanceof Error ? error.message : String(error)
+  }
+}
+
+async function clearModuleCache() {
+  debugError.value = ''
+  try {
+    const response = await fetch('/api/lab/debug/clear-cache', { method: 'POST' })
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const result = (await response.json()) as { invalidatedModules: number; fullReload: boolean }
+    debugResult.value = `已失效 ${result.invalidatedModules} 个模块，full-reload 已发送。`
+  } catch (error) {
+    debugError.value = error instanceof Error ? error.message : String(error)
+  }
+}
 </script>
 
 <template>
@@ -88,6 +124,19 @@ async function requestProxy(mode: 'success' | 'http-error' | 'network-error') {
       </div>
       <p v-if="proxyError" class="error" role="alert">{{ proxyError }}</p>
       <pre v-if="proxyResult" class="result" data-testid="proxy-result">{{ JSON.stringify(proxyResult, null, 2) }}</pre>
+    </article>
+
+    <article v-else-if="scenario === 'debug-endpoints'" class="panel">
+      <p class="eyebrow">16 · 白名单诊断与模块失效</p>
+      <h1>Debug endpoints</h1>
+      <p>配置响应只包含安全字段；清缓存会使模块失效并刷新当前页面。</p>
+      <div class="actions">
+        <button type="button" @click="loadDebugConfig">查看安全运行配置</button>
+        <button type="button" @click="clearModuleCache">清缓存并刷新</button>
+      </div>
+      <p v-if="debugError" class="error" role="alert">{{ debugError }}</p>
+      <p v-if="debugResult" data-testid="debug-result">{{ debugResult }}</p>
+      <pre v-if="debugConfig" class="result" data-testid="debug-config">{{ JSON.stringify(debugConfig, null, 2) }}</pre>
     </article>
   </section>
 </template>

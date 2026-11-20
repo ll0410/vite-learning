@@ -13,4 +13,10 @@ export const devServerRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/plugins/dev-server/DevServerDemos.vue'),
     props: { scenario: 'proxy-fallback' },
   },
+  {
+    path: '/plugins/dev-server/debug-endpoints-demo',
+    name: 'dev-server-debug-endpoints',
+    component: () => import('@/views/plugins/dev-server/DevServerDemos.vue'),
+    props: { scenario: 'debug-endpoints' },
+  },
 ]
