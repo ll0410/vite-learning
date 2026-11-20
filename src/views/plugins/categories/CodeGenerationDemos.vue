@@ -5,6 +5,10 @@ import { getUsers, type GeneratedUser } from 'virtual:generated-api'
 import generatedRoutes from 'virtual:generated-routes'
 import messages from 'virtual:generated-i18n'
 import appInfo from 'virtual:app-info'
+import rocketPath from 'virtual:on-demand-data/icons/rocket'
+import bookPath from 'virtual:on-demand-data/icons/book'
+import viteDefinition from 'virtual:on-demand-data/dictionary/vite'
+import pluginDefinition from 'virtual:on-demand-data/dictionary/plugin'
 
 const users = ref<GeneratedUser[]>([])
 const loading = ref(false)
@@ -31,6 +35,15 @@ const currentMessages = computed(() => messages[locale.value])
 function toggleLocale() {
   locale.value = locale.value === 'zh-CN' ? 'en-US' : 'zh-CN'
 }
+
+const iconEntries = [
+  { key: 'rocket', label: '火箭', path: rocketPath },
+  { key: 'book', label: '文档', path: bookPath },
+]
+const dictionaryEntries = [
+  { key: 'vite', definition: viteDefinition },
+  { key: 'plugin', definition: pluginDefinition },
+]
 </script>
 
 <template>
@@ -112,6 +125,34 @@ function toggleLocale() {
         </nav>
         <p class="muted">页面来自 src/views/conventional，动态 import 会形成独立页面 chunk。</p>
       </article>
+    </section>
+
+    <section id="on-demand-data" class="demo-section">
+      <h2>4. 大体积静态数据按需导出</h2>
+      <div class="grid">
+        <article class="panel">
+          <h3>只请求 rocket 与 book 图标</h3>
+          <ul class="icon-list">
+            <li v-for="icon in iconEntries" :key="icon.key">
+              <svg viewBox="0 0 24 24" :aria-label="icon.label" role="img">
+                <path :d="icon.path" />
+              </svg>
+              <span>{{ icon.label }}</span>
+              <code>icons/{{ icon.key }}</code>
+            </li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>只请求两个词条</h3>
+          <dl>
+            <template v-for="entry in dictionaryEntries" :key="entry.key">
+              <dt><code>dictionary/{{ entry.key }}</code></dt>
+              <dd>{{ entry.definition }}</dd>
+            </template>
+          </dl>
+        </article>
+      </div>
+      <p class="hint">源 JSON 含 UNUSED_*_SENTINEL_DO_NOT_BUNDLE；它不应出现在这些 load 结果或生产 JS 中。</p>
     </section>
   </div>
 </template>
@@ -201,5 +242,41 @@ td {
   padding: 6px;
   border-bottom: 1px solid #f3f4f6;
   text-align: left;
+}
+
+.route-panel nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.icon-list {
+  display: flex;
+  gap: 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-list li {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.icon-list svg {
+  width: 48px;
+  height: 48px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+dt {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+dd {
+  margin: 4px 0 0;
 }
 </style>

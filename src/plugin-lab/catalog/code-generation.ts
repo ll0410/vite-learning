@@ -25,5 +25,12 @@ export const codeGenerationCategory: PluginLabCategory = {
       demo: '/plugin-lab/code-generation#auto-discovery',
       verify: '渲染自动注册组件，并导航、刷新真实的约定式页面。',
     },
+    {
+      id: 'on-demand-data',
+      title: '4. 大体积静态数据按需导出',
+      guide: '/plugins/code-generation/04-on-demand-data',
+      demo: '/plugin-lab/code-generation#on-demand-data',
+      verify: '检查 load 只含请求键，并确认产物不含未请求哨兵。',
+    },
   ],
 }

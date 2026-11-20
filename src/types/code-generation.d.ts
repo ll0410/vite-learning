@@ -53,3 +53,8 @@ declare module 'virtual:conventional-routes' {
   const routes: RouteRecordRaw[]
   export default routes
 }
+
+declare module 'virtual:on-demand-data/*' {
+  const value: string
+  export default value
+}

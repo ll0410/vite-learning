@@ -1,0 +1,5 @@
+{
+  "vite": "Vite 通过原生 ESM 提供开发服务，并在生产构建中生成优化产物。",
+  "plugin": "插件通过解析、加载和转换等钩子扩展模块管线。",
+  "unused-heavy-entry": "UNUSED_DICTIONARY_SENTINEL_DO_NOT_BUNDLE"
+}
