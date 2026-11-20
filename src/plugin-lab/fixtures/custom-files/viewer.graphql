@@ -1,0 +1,7 @@
+# 这个受控文档不会被插件校验或执行。
+query CustomFileViewer {
+  viewer {
+    id
+    displayName
+  }
+}
