@@ -5,14 +5,20 @@ import { isAbsolute, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Plugin } from 'vite'
 
+// 以当前模块 URL 定位受控目录，避免结果依赖进程工作目录；目录外的同名文件不会被转换。
 const FIXTURE_ROOT = fileURLToPath(
   new URL('../../src/plugin-lab/fixtures/custom-files/', import.meta.url),
 )
 
+/** 去掉 Vite 模块 ID 的查询参数，例如将 file.vue?vue&type=script 还原为文件路径。 */
 function withoutQuery(id: string) {
   return id.split('?', 1)[0]!
 }
 
+/**
+ * 判断模块 ID 是否指向 fixture 内的受控文件，可同时校验可选扩展名。
+ * relative 的结果用于排除 .. 越界路径和绝对路径，避免转换 fixture 之外的文件。
+ */
 function isControlledFile(id: string, extension?: '.md' | '.graphql' | '.csv') {
   const file = withoutQuery(id)
   if (extension && !file.endsWith(extension)) return false
@@ -37,9 +43,14 @@ function escapeHtml(value: string) {
 }
 
 // 仅支持一至三级标题、段落、无序列表和围栏代码块；所有原始行内标记都按文本处理。
+/**
+ * 输入 Markdown 原文，输出只含 <template> 的 Vue SFC 源码字符串。
+ * 此函数不直接编译模板，后续由 @vitejs/plugin-vue 接管编译。
+ */
 function markdownToSfc(source: string) {
   const lines = source.replace(/\r\n?/g, '\n').split('\n')
   const output: string[] = []
+  // paragraph 与 codeLines 暂存跨行内容，inList/inCode 记录当前所处的块级结构。
   let paragraph: string[] = []
   let codeLines: string[] = []
   let inList = false
@@ -121,12 +132,18 @@ function markdownToSfc(source: string) {
 }
 
 // 逐字符解析以支持引号内的逗号、换行，以及双引号转义。
+/**
+ * 输入 CSV 原文，输出 { headers, rows }，其中 rows 是以表头为键的对象数组。
+ * 例如 name,age\nAda,36 会得到 headers: ['name', 'age']、rows: [{ name: 'Ada', age: '36' }]。
+ * 所有单元格都保留为字符串，格式不合法时抛出带插件名的错误。
+ */
 function parseCsv(source: string) {
   const input = source.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
   const records: string[][] = []
   let row: string[] = []
   let field = ''
   let inQuotes = false
+  // quoteClosed 用于识别闭合引号后的非法字符，例如 "value"suffix。
   let quoteClosed = false
 
   const finishRow = () => {
@@ -195,12 +212,19 @@ function parseCsv(source: string) {
   return { headers, rows }
 }
 
+/**
+ * 创建受控文件转换插件：
+ * - Markdown 经 resolveId/load 包装成虚拟 .vue 主模块，再交给 Vue 插件编译。
+ * - GraphQL 与 CSV 经 transform 转成带命名导出和默认导出的 JavaScript 模块。
+ * - handleHotUpdate 把真实文件变化映射回这些派生模块，并触发整页刷新。
+ */
 export function customFileTypesPlugin(): Plugin {
   return {
     name: 'lab:custom-file-types',
     // 必须早于 Vite alias，否则 @/ 开头的 .md 导入会先被 alias 直接解析。
     enforce: 'pre',
 
+    // resolveId 接收 import 的来源路径和引用方，输出供后续 load 使用的模块 ID。
     async resolveId(source, importer) {
       const queryIndex = source.indexOf('?')
       const request = queryIndex === -1 ? source : source.slice(0, queryIndex)
@@ -208,6 +232,7 @@ export function customFileTypesPlugin(): Plugin {
 
       // dev 导入会带 ?import；raw/url 等显式查询仍走 Vite 自己的资源处理。
       if (!request.endsWith('.md') || (query && query !== '?import')) return
+      // skipSelf 防止递归调用当前钩子，同时复用 Vite 的别名与普通文件路径解析。
       const resolved = await this.resolve(request, importer, { skipSelf: true })
       if (!resolved || !isControlledFile(resolved.id, '.md')) return
 
@@ -215,6 +240,8 @@ export function customFileTypesPlugin(): Plugin {
       return { id: `${resolved.id}.vue${query}` }
     },
 
+    // load 读取真实 .md 文件，却为 .md.vue 这个合成 ID 返回 SFC 源码。
+    // 带 ?vue 的请求属于 Vue 插件拆出的子块，必须交还给 Vue 插件处理。
     async load(id) {
       const file = withoutQuery(id)
       const query = id.includes('?') ? new URLSearchParams(id.slice(id.indexOf('?') + 1)) : null
@@ -227,6 +254,8 @@ export function customFileTypesPlugin(): Plugin {
       return { code: markdownToSfc(source), map: null }
     },
 
+    // transform 在文件加载后把原始文本替换为 ESM 源码；map: null 表示不生成 source map。
+    // 带查询参数的专用请求（如 ?raw、?url）保留给 Vite 默认管线处理。
     transform(code, id) {
       if (id.includes('?')) return
 
@@ -256,11 +285,13 @@ export function customFileTypesPlugin(): Plugin {
       }
     },
 
+    // handleHotUpdate 在开发期文件变化后执行，可调整 Vite 默认计算出的 HMR 更新范围。
     handleHotUpdate({ file, server, modules }) {
       if (!isControlledFile(file)) return
 
       const affected = new Set(modules)
       if (file.endsWith('.md')) {
+        // Markdown 的模块图节点登记在合成 .vue 文件下，需额外并入才能一起失效。
         const vueModules = server.moduleGraph.getModulesByFile(`${file}.vue`)
         vueModules?.forEach((module) => affected.add(module))
       }
@@ -268,6 +299,7 @@ export function customFileTypesPlugin(): Plugin {
 
       // 教学示例统一整页刷新，避免把 SFC 重载与数据模块边界混在一起。
       server.ws.send({ type: 'full-reload', path: '*' })
+      // 返回扩展后的模块集合，让 Vite 按这个范围继续完成热更新后续处理。
       return [...affected]
     },
   }

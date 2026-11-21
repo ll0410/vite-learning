@@ -73,9 +73,14 @@ const headTags: HtmlTagDescriptor[] = [
   },
 ]
 
+/**
+ * 创建 HTML 增强插件，加入 Report-Only CSP、内联主题样式和应用挂载前的首屏骨架。
+ * 转换只作用于内存中的 HTML 或构建产物，不会回写项目里的 index.html 源文件。
+ */
 export function injectHeadAssets(): Plugin {
   return {
     name: 'plugin-lab:inject-head-assets',
+    // dev 与 build 都会执行该钩子：html 字段负责字符串替换，tags 字段由 Vite 按注入点序列化。
     transformIndexHtml(html): { html: string; tags: HtmlTagDescriptor[] } {
       return {
         // 骨架先放入挂载点，Vue 挂载后会替换它。

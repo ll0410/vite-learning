@@ -9,12 +9,19 @@ interface LabManifest {
   imports: string[]
 }
 
+/**
+ * 创建教学用 SSR 资源清单插件，仅在构建阶段运行。
+ *
+ * SSR 服务端需要知道入口最终输出名、关联 CSS 和静态依赖 chunk，才能在渲染 HTML 时加载正确资源。
+ * 本例只生成单入口 lab-manifest.json，用来展示如何读取 bundle 与 Vite 元数据，并非完整复刻 Vite 官方 manifest。
+ */
 export function ssrManifestPlugin(): Plugin {
   return {
     name: 'lab:build-output:ssr-manifest',
     apply: 'build',
 
     generateBundle(_options, bundle) {
+      // 只筛选入口 JS chunk；普通 asset 和按需加载的动态 chunk 都不是 SSR 的服务端渲染入口。
       const entries = Object.entries(bundle).filter(
         ([, output]) => output.type === 'chunk' && output.isEntry,
       )
@@ -28,6 +35,8 @@ export function ssrManifestPlugin(): Plugin {
 
       if (chunk.type !== 'chunk') return
 
+      // importedCss 是 Vite 附加在 chunk 上的 Set，展开为数组后才能直接序列化成 JSON。
+      // imports 记录静态依赖 chunk 的最终文件名，动态依赖则位于 chunk.dynamicImports，本例不纳入清单。
       const manifest: LabManifest = {
         entry: chunk.name,
         file: fileName,
@@ -35,6 +44,7 @@ export function ssrManifestPlugin(): Plugin {
         imports: [...chunk.imports],
       }
 
+      // 把清单作为额外 asset 发射，它会与入口 chunk 一起写入输出目录。
       this.emitFile({
         type: 'asset',
         fileName: 'lab-manifest.json',
