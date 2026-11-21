@@ -86,7 +86,7 @@ const dictionaryEntries = [
 ]
 ```
 
-模板遍历这个数组，并通过 `<dd>{{ entry.definition }}</dd>` 显示定义。消费者不需要知道 JSON 的路径，也没有拿到可以遍历整个词库的对象。
+模板遍历这个数组，并通过 <code v-pre>&lt;dd&gt;{{ entry.definition }}&lt;/dd&gt;</code> 显示定义。消费者不需要知道 JSON 的路径，也没有拿到可以遍历整个词库的对象。
 
 `src/types/code-generation.d.ts` 用通配声明覆盖这类动态模块 ID：
 
