@@ -61,9 +61,9 @@ export default defineConfig({
         {
           text: '插件手册',
           items: [
-            { text: '场景指南首页', link: '/plugins/' },
-            { text: '高频使用场景', link: '/plugins/appendix-plugin-scenarios' },
-            { text: '开发必备插件清单', link: '/plugins/appendix-plugins' },
+            { text: '学习方式', link: '/plugins/' },
+            { text: '使用场景', link: '/plugins/appendix-plugin-scenarios' },
+            { text: '开发必备', link: '/plugins/appendix-plugins' },
           ],
         },
         ...pluginGuideSidebar,
