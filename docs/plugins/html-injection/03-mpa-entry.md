@@ -9,6 +9,13 @@ MPA（Multi-Page Application，多页应用）是指一个项目包含多个 HTM
 
 前者解决“构建哪些页面”，后者解决“每份 HTML 里写什么标签”，不能互相替代。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：Vite 官方 [多页应用](https://vite.dev/guide/build.html#multi-page-app)：用 `build.rolldownOptions.input` 声明多个 HTML，每个入口维护自己的模板，再用 `transformIndexHtml` 按入口上下文分流。
+- **覆盖程度**：**官方已覆盖**。
+- **本例定位**：教学用最小实现，重点是理解两个互补链路：构建入口声明，以及 dev/build 的按入口标签注入。
+- **值得自研的时机**：入口映射非常复杂、需要统一模板和共享注入规则时。
+:::
+
 ## 先看完整结果：两个入口各得到什么
 
 插件中的入口元数据、构建入口名和页面消费方式如下。注意：**构建入口名是 `index/admin`，注入到 meta 中的标识是 `main/admin`**，它们不是同一组值。
@@ -309,7 +316,9 @@ pnpm exec vite preview --port 5314
 
 在默认根路径部署下，访问 `http://localhost:5314/plugins/html-injection#mpa-entry` 和 `http://localhost:5314/admin.html`，预期看到与 dev 相同的入口标识、标题和 Admin 静态文案。此时加载的应是构建后的资源。
 
-## 进阶边界
+## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 未知入口会静默回退，title 替换也只覆盖简单模板
 

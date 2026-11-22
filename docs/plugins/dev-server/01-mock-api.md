@@ -4,6 +4,13 @@
 
 一句话概括：**浏览器发出普通 `fetch` 请求，开发服务器中的插件返回 JSON，Vue 页面把 JSON 渲染成用户列表。**
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：Vite 中间件式的文件 Mock 用 [`vite-plugin-mock-dev-server`](https://github.com/pengzhanbo/vite-plugin-mock-dev-server)；需要 dev 与单元测试共用同一套 handler 时用 [MSW](https://github.com/mswjs/msw)。
+- **覆盖程度**：**成熟社区方案**。
+- **本例定位**：教学用最小实现，重点是理解 `configureServer` 和 `apply: 'serve'` 如何把接口挂到开发服务器。
+- **值得自研的时机**：只需要固定响应或教学演示时；生产环境不要使用 dev mock。
+:::
+
 ## 核心示例：点击按钮，看到三个用户
 
 ### 1. 先跑通这个页面
@@ -254,6 +261,8 @@ pnpm exec vite preview --port 5315 --strictPort
 要验证完整生产链路，必须在真实部署环境中为 `/api/mock/users` 提供可访问的接口。`vite preview` 成功启动并不等于生产后端已经就绪。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 本例的限制与生产边界
 

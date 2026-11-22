@@ -2,6 +2,13 @@
 
 在 Vue 项目中反复书写 `import { ref } from 'vue'` 和基础组件导入，会产生大量样板代码。本例让插件在编译前检查源码：确实使用了某个 API 或组件、且当前文件没有同名变量时，才补入对应的 import。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：API 自动导入用 [`unplugin-auto-import`](https://github.com/unplugin/unplugin-auto-import)，组件按需引入用 [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components)，这是社区事实标准。
+- **覆盖程度**：**成熟社区方案**。
+- **本例定位**：教学用最小实现，重点是理解 `transform` 如何补 import、为什么需要 `enforce: 'pre'`，以及 `.d.ts` 为什么要单独生成。
+- **值得自研的时机**：公司内部组件库的特殊命名或目录规则无法通过 resolver 配置表达时。
+:::
+
 ## 先看懂：插件在做什么
 
 一句话概括：**指定 Vue 文件是输入，补齐 import 的 Vue 文件是转换结果，后续消费者拿到的仍然是普通 ES 模块。**
@@ -328,6 +335,8 @@ pnpm exec vite preview --port 5313
 开发指南可通过“插件开发指南 → 3. 按需导入 / 自动引入 → 9. API 自动导入与组件按需引入”访问。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 

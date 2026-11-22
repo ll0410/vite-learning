@@ -6,6 +6,13 @@
 
 > 对应源码：仓库根目录的 `plugins/strip-debug.ts`。这是 [ch10 基础示例](../../guide/ch10-plugins.md) 的受控增强版。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：Vite 8 用 Oxc 压缩选项 `dropConsole` / `dropDebugger` 移除调试代码；测试块可写成标准 label，再用 Rolldown [`dropLabels`](https://rolldown.rs/reference/InputOptions.transform) 删除。
+- **覆盖程度**：**官方已覆盖**（粗粒度）。
+- **本例定位**：教学用最小实现，重点是理解 `transform` + `apply: 'build'` 的裁剪时机，以及用哨兵断言验证产物。
+- **值得自研的时机**：只删特定 console 方法、保留其余 console，或需要按 AST 精确判断时。
+:::
+
 ## 先看懂：从一份 fixture 到生产 chunk
 
 一句话概括：**fixture 是输入，`transform` 返回删减后的源码，分类页通过导入让它进入构建，最后检查路由产物中哪些哨兵消失、哪些普通代码仍在。**
@@ -283,6 +290,8 @@ STRIP_DEBUG_DEV_SENTINEL
 这说明调试语句被清理后，普通副作用仍随分类 chunk 加载并执行。控制台可能有应用的其他正常输出，不要把“控制台完全为空”当作本例目标。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 

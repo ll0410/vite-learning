@@ -4,13 +4,30 @@
 
 本附录的每个场景都配有一个可直接运行的最小实现，源码在根目录 `plugins/`，说明见各条目的指南链接。16 个场景可以在 `pnpm dev` 页面验证：启动开发服务后打开头部「插件」入口，按分类逐项操作。另外 7 个场景只对构建产物生效，没有等价的 dev 页面示例，指南中提供了可执行的 `pnpm build` 与产物断言命令。
 
+> 每篇指南文首都有「现成方案速览」。本页只做选型索引；有现成方案时，教学实现不代表需要自研。
+
+## 先查现成方案（总览）
+
+| 场景 | 优先使用的官方 / 成熟方案 |
+| --- | --- |
+| 代码生成 | `@hey-api/openapi-ts` + `@hey-api/vite-plugin`、`import.meta.glob`、`@intlify/unplugin-vue-i18n` |
+| 组件 / 路由 / 自动导入 | `unplugin-auto-import`、`unplugin-vue-components`、`vue-router/vite` |
+| 代码裁剪 / 条件编译 | `define`、`import.meta.env`、Oxc `dropConsole` / `dropDebugger`、`dropLabels` |
+| HTML 注入 / MPA | `transformIndexHtml`、Vite MPA、`html.cspNonce`、`vite-plugin-csp-guard` |
+| dev server | `server.proxy` / `configureServer`、`vite-plugin-mock-dev-server`、MSW、`vite-plugin-inspect` |
+| 构建产物 | `build.manifest` / `build.ssrManifest`、`vite-plugin-sri3`、`vite-plugin-static-copy`、`public/` |
+| 自定义文件类型 | `unplugin-vue-markdown`、`@rollup/plugin-graphql`、`@rollup/plugin-dsv` |
+| 迁移旧工具链 | Rollup 兼容钩子、`unplugin` |
+
+具体覆盖程度和自研边界见各篇文首的「现成方案速览」。
+
 ## 1. 代码生成 / 虚拟模块（最高频）
 
 `resolveId` + `load`
 
 - 自动生成 API 客户端、路由表、i18n 资源聚合：[最小实现](./code-generation/01-generated-modules.md)
 - 编译期常量：版本号、构建时间、Git commit、环境标识：[最小实现](./code-generation/02-build-constants.md)
-- 组件自动注册、目录约定式路由（`unplugin-vue-router` 就是这套）：[最小实现](./code-generation/03-auto-discovery.md)
+- 组件自动注册、目录约定式路由（长期方案是 Vue Router 5 内置的 `vue-router/vite`；旧 `unplugin-vue-router` 已归档并入）：[最小实现](./code-generation/03-auto-discovery.md)
 - 大体积静态数据（图标集、字典表）按需导出：[最小实现](./code-generation/04-on-demand-data.md)
 
 价值在于：**把「需要人工同步的文件」变成「构建时自动生成」**，消除手写错误。
@@ -22,7 +39,7 @@
 - 移除 `console` / `debugger` / 测试代码（即 ch10 的 `strip-debug`）：[最小实现](./code-transform/01-strip-debug.md)
 - 埋点自动注入（在组件挂载点插上报调用）：[最小实现](./code-transform/02-inject-tracking.md)
 - 多租户 / 多品牌差异化：同一套代码产出不同包：[最小实现](./code-transform/03-tenant-build.md)
-- 生产环境替换敏感配置、条件编译开关：[最小实现](./code-transform/04-conditional-build.md)
+- 生产环境替换公开配置、条件编译开关：[最小实现](./code-transform/04-conditional-build.md)
 
 ## 3. 按需导入 / 自动引入
 
@@ -67,6 +84,8 @@ ch10 的 `append-build-stamp` 就是最小版本。
 | 迁移 webpack 生态 | 兼容 Rollup 钩子 | 老项目插件平移、内部工具链统一：[最小实现](./migration/01-legacy-rollup.md) |
 
 ## 写插件前先问三个问题
+
+如果文首速览已经给出官方或成熟方案，优先选型；只有确认现有方案无法表达团队约定时，才进入下面三个问题。
 
 1. **配置能解决吗？** 能就别写——`define`、`alias`、`server.proxy` 覆盖了大量需求。
 2. **有现成 unplugin 吗？** `unplugin-*` 生态基本覆盖通用场景。

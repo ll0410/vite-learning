@@ -9,6 +9,13 @@
 - **内容安全策略（Content Security Policy，CSP）**：告诉浏览器允许加载或执行哪些资源。本例使用 **Report-Only（仅报告）** 模式观察策略，不把它当作强制防护。
 - **首屏骨架**：真实组件出现前，先放在页面里的静态占位结构。它不是服务端渲染出来的完整页面。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：静态 CSP meta、主题变量和首屏骨架用 `transformIndexHtml` 注入；Vite 还提供 [`html.cspNonce`](https://vite.dev/config/shared-options.html#html-cspnonce)。需要完整 CSP 策略时可评估 [`vite-plugin-csp-guard`](https://github.com/tsotimus/vite-plugin-csp-guard)（声明支持 Vite 8，SPA 定位）。
+- **覆盖程度**：**部分覆盖**。
+- **本例定位**：教学用最小实现，重点是理解多段 HTML 注入的先后顺序，以及为什么主题和骨架要保持最小。
+- **值得自研的时机**：主题体系与骨架内容属于业务；CSP 生产环境建议用 HTTP Header 配合专用方案。
+:::
+
 ## 第一个完整示例：页面从 HTML 到组件树经历了什么
 
 整条链路如下。`transformIndexHtml` 是 Vite 的 HTML 转换钩子，也就是插件接收 HTML 字符串并返回修改结果的位置。注意，注入结果与 Vue 挂载结果是两个连续但不同的阶段。
@@ -328,7 +335,9 @@ http://localhost:5214/plugins/html-injection#head-assets
 
 也可以临时停用 JavaScript，再请求页面。此时 Vue 不会挂载，静态骨架应继续存在；这个方向验证的是“转换后的 HTML 自带骨架”，不是“Vue 会替换骨架”。验证后记得恢复网络与 JavaScript 设置。
 
-## 进阶边界
+## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产 CSP：enforcing、HTTP Header、nonce/hash 与报告收集
 

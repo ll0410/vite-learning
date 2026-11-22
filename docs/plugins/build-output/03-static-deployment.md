@@ -2,6 +2,13 @@
 
 静态站点构建完成后，浏览器、搜索引擎和托管平台需要的东西并不相同：浏览器需要确认 JS/CSS 没有被替换，搜索引擎需要抓取规则，托管平台需要响应头配置。本例在**产物写盘前**一次性准备好这三类结果。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：SRI 用 [`vite-plugin-sri3`](https://github.com/yoyo930021/vite-plugin-sri3)（声明并测试 Vite 8）；`robots.txt`、`_headers` 直接放 `public/`，需要复制时转换则用 [`vite-plugin-static-copy`](https://github.com/sapphi-red/vite-plugin-static-copy)（声明支持 Vite 6–8）。
+- **覆盖程度**：**部分覆盖**（拆成几个现成方案组合）。
+- **本例定位**：教学用最小实现，重点是理解为什么要在 post 阶段处理，以及文件生成顺序为何影响结果。
+- **值得自研的时机**：需要与压缩、CDN 上传顺序强绑定，或 SRI 覆盖范围超出插件能力时。
+:::
+
 ## 先看懂：插件在做什么
 
 一句话概括：**Vite 已生成的 HTML 和本地 JS/CSS 是输入，带完整性摘要的 HTML、`robots.txt` 和 `_headers` 是输出，三类消费者各取所需。**
@@ -341,6 +348,8 @@ pnpm exec vite preview --port 5320 --strictPort
 不要用 preview 的响应头来判断 `_headers` 是否生效；它不模拟 Netlify 或 Cloudflare Pages 的配置读取行为。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 

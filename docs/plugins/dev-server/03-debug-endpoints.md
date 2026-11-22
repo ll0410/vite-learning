@@ -20,6 +20,13 @@ configureServer 注册的 /api/lab/debug 中间件
 
 先用“查看安全运行配置”走完一条请求链路，再解释清缓存为什么不能只调用 `invalidateAll()`。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：观察插件管线和模块转换用 [`vite-plugin-inspect`](https://github.com/antfu-collective/vite-plugin-inspect) 与 [Vite DevTools](https://devtools.vite.dev/guide/)；自定义管理端点没有通用插件。
+- **覆盖程度**：**部分覆盖**。
+- **本例定位**：教学用最小实现，重点是理解 `ViteDevServer` API、`moduleGraph` 失效和 `ws` full-reload 的作用。
+- **值得自研的时机**：团队确实需要本地诊断端点时；绝不能把这组端点注册到生产环境。
+:::
+
 ## 核心示例：点击按钮，查看安全运行配置
 
 ### 1. 页面发出普通 GET 请求
@@ -335,7 +342,9 @@ curl -i http://localhost:5215/api/lab/debug/clear-cache
 - 第一条：`405`，`Allow: GET`，正文为 `{"error":"method_not_allowed"}`，不返回配置。
 - 第二条：`405`，`Allow: POST`，正文同样为 `{"error":"method_not_allowed"}`，不失效模块，也不发送 `full-reload`。
 
-## 进阶边界
+## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 为什么不能把它当成生产诊断接口
 

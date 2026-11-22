@@ -2,6 +2,13 @@
 
 [返回插件场景附录](../appendix-plugin-scenarios.md) · [回顾 ch10 插件机制](../../guide/ch10-plugins.md)
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：Markdown 用 [`unplugin-vue-markdown`](https://github.com/unplugin/unplugin-vue-markdown)（声明支持 Vite 8）；GraphQL 用 [`@rollup/plugin-graphql`](https://github.com/rollup/plugins/tree/master/packages/graphql)；CSV 用 [`@rollup/plugin-dsv`](https://github.com/rollup/plugins/tree/master/packages/dsv)。后两者接入 Vite 8 前需要实测。
+- **覆盖程度**：**成熟社区方案**（按文件类型拆分）。
+- **本例定位**：教学用最小实现，重点是理解 `transform` 如何把自定义扩展名转成 Vue 组件或普通 JS 模块。
+- **值得自研的时机**：私有格式，或需要额外的安全、沙箱策略时。
+:::
+
 ## 先看懂：文件怎样变成页面可以导入的模块
 
 业务仓库里并非所有内容都适合直接写成 `.ts` 或 `.vue`：文档作者可能维护 Markdown，前后端可能共享 GraphQL 文档，运营或数据同学可能维护小型 CSV。本例让应用直接导入这三类文件，而不是在浏览器里再请求并解析文本。
@@ -408,6 +415,8 @@ fi
 最后运行 `pnpm preview --port 4217 --strictPort`，打开 <http://localhost:4217/plugins/custom-files-demo>。预期页面结果与开发环境一致，但三种文件已经在构建时编入 chunk，不依赖开发服务器的转换接口或 Inspect。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 

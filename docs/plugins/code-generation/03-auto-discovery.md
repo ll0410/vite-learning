@@ -2,6 +2,13 @@
 
 手动维护组件注册表和路由数组时，文件已经存在，却还要在另一处重复写名称、路径和 import。本例让插件扫描两个**明确受控的目录**，把目录结构直接变成应用可以使用的 JavaScript 模块。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：组件自动注册用 [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components)；文件路由用 **Vue Router 5 内置的 `vue-router/vite`**（[迁移说明](https://router.vuejs.org/guide/migration/v4-to-v5)），旧 `unplugin-vue-router` 已归档并入。
+- **覆盖程度**：**成熟社区方案**，但有版本前提：本项目仍是 `vue-router@4.6`，升级到 5 前不能直接替换入口。
+- **本例定位**：教学用最小实现，重点是理解目录扫描结果如何变成虚拟模块，再被组件注册或路由表消费。
+- **值得自研的时机**：公司内部组件目录或命名规则无法通过 resolver 配置表达时。
+:::
+
 ## 先看懂：插件在做什么
 
 一句话概括：**目录是数据源，虚拟模块是生成结果，应用消费的仍然是普通 JavaScript 数组。**
@@ -207,6 +214,8 @@ curl http://localhost:5211/@id/__x00__virtual:conventional-routes
 预期结果：About、动态用户等页面生成各自的 JS chunk；直接访问上述路由时，对应 chunk 均能正常加载。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 

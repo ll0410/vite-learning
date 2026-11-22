@@ -4,6 +4,13 @@
 
 本例源码是 `plugins/code-generation/generated-modules.ts`，输入位于 `src/plugin-lab/fixtures/codegen/`。三个示例都由插件生成模块，但生成结果并不相同：API 是可调用函数，路由是纯记录数据，i18n（国际化）是按语言编码聚合的消息对象。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：API 客户端可用 [`@hey-api/openapi-ts`](https://heyapi.dev/docs/openapi/typescript/get-started) + `@hey-api/vite-plugin`（官方声明支持 Vite 5–8）；i18n 资源聚合可用 [`@intlify/unplugin-vue-i18n`](https://github.com/intlify/bundle-tools/tree/main/packages/unplugin-vue-i18n) 或 Vite 官方 `import.meta.glob`。
+- **覆盖程度**：**部分覆盖**——没有单个插件同时包办接口、路由、i18n 三类生成物。
+- **本例定位**：教学用最小实现，重点是理解 `resolveId` / `load` 如何用虚拟模块把生成结果接进模块图；生产项目优先使用上面的生成器。
+- **值得自研的时机**：生成物来自公司内部私有协议或目录约定，通用生成器无法配置表达时。
+:::
+
 ## 先看懂：插件在做什么
 
 一句话概括：**JSON 是数据源，虚拟模块是生成结果，页面消费的仍然是普通 JavaScript 导出。**
@@ -396,6 +403,8 @@ URL 中的 `__x00__` 对应内部 ID 的 `\0`。预期响应分别包含：
 如需检查产物页面，可运行 `pnpm exec vite preview --port 5311` 并访问同一路径。路由表格和中英文切换应继续工作，因为它们的数据已经打包；用户 API 则不会自动获得开发期 Mock 数据，页面会显示捕获到的请求或 JSON 解析错误。这是因为 `mockApiPlugin()` 使用 `apply: 'serve'`，不是虚拟模块构建失败。要验证完整生产链路，必须为 `/api/mock/users` 提供真实可访问的生产接口。
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 

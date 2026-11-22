@@ -57,16 +57,16 @@ checker({
 
 | 插件 | 场景 |
 | --- | --- |
-| `unplugin-vue-router` | 目录约定式路由，替代手写路由表 |
-| `vite-plugin-mock-dev-server` / `MSW` | Mock 数据；**优先 MSW**，dev 与测试共用一套 |
+| `vue-router/vite` | 目录约定式路由；Vue Router 5 起内置。旧 `unplugin-vue-router` 已归档，升级前需先把 vue-router 升到 5 |
+| `vite-plugin-mock-dev-server` / `MSW` | Mock 数据：需要 Vite 中间件 / 录制回放优先前者；dev 与测试共用 handler 优先 MSW |
 | `@vitejs/plugin-legacy` | 兼容不支持 ESM 的老浏览器，会显著增大产物 |
 | `vite-plugin-pwa` | 离线缓存、Service Worker |
 | `vite-svg-loader` | 把 SVG 当 Vue 组件使用 |
 | `unplugin-dts` | 写组件库 / npm 包时生成 `.d.ts` |
 | `vite-plugin-image-optimizer` | 构建期压缩图片 |
-| `vite-plugin-html` | 多页应用、复杂 HTML 注入 |
+| `vite-plugin-html` | 多页应用、复杂 HTML 注入。优先用官方 `transformIndexHtml` 与 MPA；该插件维护 / 发布较旧，接入 Vite 8 前需验证 |
 
-注意 `mock-api`：本章手写的 `plugins/mock-api.ts` 只适合学习和小项目；真实项目建议用 MSW，因为它的 handler 能在单元测试里复用。
+注意 `mock-api`：本章手写的 `plugins/mock-api.ts` 只适合学习和小项目；真实项目按用途选择 `vite-plugin-mock-dev-server` 或 MSW。
 
 ## 四、反模式
 

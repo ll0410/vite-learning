@@ -4,6 +4,13 @@
 
 本例换一种边界：**业务代码把数据集和 key 写进模块 ID，插件每次只生成一个值的默认导出。**示例只请求 `rocket`、`book` 两个图标和 `vite`、`plugin` 两个词条；源 JSON 中特意保留两个未请求的哨兵字符串，用来检查它们是否混入模块源码或生产 JS。
 
+::: tip 现成方案速览
+- **官方 / 成熟方案**：图标按需引入用 [`unplugin-icons`](https://github.com/unplugin/unplugin-icons)；词典类数据可按 key 预拆文件，再用 Vite 官方 [`import.meta.glob`](https://vite.dev/guide/features.html#glob-import) 懒加载。
+- **覆盖程度**：**部分覆盖**——单个巨型 JSON 按内部 key 拆包没有通用等价插件。
+- **本例定位**：教学用最小实现，重点是理解模块 ID 携带数据集与 key 后，`load` 如何只生成单项导出。
+- **值得自研的时机**：数据源必须是单个大 JSON、不能改结构，同时又要按内部 key 生成独立 chunk 时。
+:::
+
 ## 先看懂：插件在做什么
 
 一句话概括：**JSON 文件是数据源，带数据集和 key 的虚拟模块是单项数据的生成边界，页面拿到的仍然是普通字符串。**
@@ -322,6 +329,8 @@ grep -R --include='*.js' "插件通过解析、加载和转换等钩子扩展模
 最后运行 `pnpm exec vite preview --port 5311`，访问 `http://localhost:5311/plugin-lab/code-generation#on-demand-data`。预期两个图标和两个词条仍正常显示。**不要用“是否恰好生成四个 JS chunk”判断按需导出是否成功；生产构建可以内联字符串或合并模块。**
 
 ## 进阶参考
+
+> 现成方案与自研边界见文首「现成方案速览」，下面只讨论本例没有覆盖的部分。
 
 ::: details 生产级实现还需补齐
 
