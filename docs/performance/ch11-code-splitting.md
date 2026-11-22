@@ -158,6 +158,13 @@ ls dist/assets | grep -E "vendor-vue|vendor-utils|Dashboard|format"
 - `modulepreload.polyfill`：老浏览器兼容。
 - 阅读：<https://vite.dev/guide/features#dynamic-import>、<https://rolldown.rs/in-depth/manual-code-splitting>
 
+### 延伸阅读
+
+- [11.1 批量懒加载：import.meta.glob 与路由分组](./advanced/01-route-glob.md)
+- [11.2 懒加载失败与发版后旧 chunk 404](./advanced/02-chunk-load-error.md)
+- [11.3 Rolldown codeSplitting.groups 调优](./advanced/03-rolldown-groups.md)
+- [11.4 预加载、modulepreload 与 chunkImportMap](./advanced/04-preload-and-importmap.md)
+
 ## 对照答案
 
 ```bash

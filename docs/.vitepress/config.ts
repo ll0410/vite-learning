@@ -74,10 +74,42 @@ export default defineConfig({
       ],
       '/performance/': [
         {
-          text: '性能优化',
+          text: '章节通关',
           items: [
+            { text: '学习方式', link: '/performance/' },
             { text: '11 Code Splitting 代码分割', link: '/performance/ch11-code-splitting' },
             { text: '12 Vite 性能优化', link: '/performance/ch12-performance' },
+          ],
+        },
+        {
+          text: '代码分割进阶（ch11 延伸）',
+          items: [
+            { text: '11.1 批量懒加载与路由分组', link: '/performance/advanced/01-route-glob' },
+            { text: '11.2 懒加载失败与 chunk 兜底', link: '/performance/advanced/02-chunk-load-error' },
+            { text: '11.3 Rolldown 分组调优', link: '/performance/advanced/03-rolldown-groups' },
+            {
+              text: '11.4 预加载与 chunkImportMap',
+              link: '/performance/advanced/04-preload-and-importmap',
+            },
+          ],
+        },
+        {
+          text: '构建与部署进阶（ch12 延伸）',
+          items: [
+            { text: '12.1 图片与字体优化', link: '/performance/advanced/05-image-and-font' },
+            { text: '12.2 老浏览器兼容', link: '/performance/advanced/06-legacy-browsers' },
+            { text: '12.3 SSR、SSG 与预渲染', link: '/performance/advanced/07-ssr-and-prerender' },
+            { text: '12.4 缓存、CDN 与部署', link: '/performance/advanced/08-cache-and-deploy' },
+            {
+              text: '12.5 体积预算与线上可观测性',
+              link: '/performance/advanced/09-budget-and-observability',
+            },
+          ],
+        },
+        {
+          text: '附录',
+          items: [
+            { text: '预压缩产物（.gz / .br）', link: '/performance/appendix-precompressed-assets' },
           ],
         },
         {

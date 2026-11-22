@@ -183,6 +183,15 @@ pnpm build && ls -lh dist/assets/*.js
 - `build.chunkImportMap` + HTTP/2：更细粒度的缓存策略。
 - SSR / 预渲染（`vite-plugin-ssr`、`vite-ssg`）：首屏性能的下一步。
 
+### 延伸阅读
+
+- [12.1 图片与字体：首屏体积的另一半](./advanced/05-image-and-font.md)
+- [12.2 老浏览器兼容：@vitejs/plugin-legacy 的代价](./advanced/06-legacy-browsers.md)
+- [12.3 SSR、SSG 与预渲染怎么选](./advanced/07-ssr-and-prerender.md)
+- [12.4 缓存、CDN 与部署产物](./advanced/08-cache-and-deploy.md)
+- [12.5 体积预算、sourcemap 与线上可观测性](./advanced/09-budget-and-observability.md)
+- [附录：预压缩产物（.gz / .br）](./appendix-precompressed-assets.md)
+
 ## 对照答案
 
 ```bash
